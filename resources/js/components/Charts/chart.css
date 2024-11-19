@@ -207,6 +207,9 @@
 }
 /* mixcahrt */
 
+.mixchart{
+  
+}
 .mixchart-legend{
   height: 200px;
   overflow: hidden;
@@ -228,12 +231,18 @@
   overflow: hidden;
   overflow-x: scroll;
 }
+.mixbarchart{
+  
+}
 
 /* line and bar */
 .line-and-bar{
   
   margin-left: -40px;
 }
+.raindbow-li:hover span{
+  color: white !important;
+} 
 .rainbow-selectors{
   
   display: flex;

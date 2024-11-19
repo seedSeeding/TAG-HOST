@@ -192,15 +192,13 @@ export default function LineBarChart() {
                 console.error("Error finding record:", error);
             }
         };
-        
         findRecord();
     }, [size, selectedPattern, records]);
 
     useEffect(() => {
         if (Array.isArray(records) && records.length > 0) {
 
-            const patternNumbers = records
-                .map((p) => p.pattern_number);
+            const patternNumbers = records;
             if (patternNumbers.length > 0) {
                 setPatternList(patternNumbers);
                 //console.log(`pattern numbers of ${brand}`,patternNumbers);
@@ -233,7 +231,6 @@ export default function LineBarChart() {
                     {/* <CustomSelector setValue={setSize} value={size} values={sizeList} /> */}
                   
                     <SearchPattern setValue={setSelectedPattern} value={selectedPattern} patterns={patternList} />
-                    
                     <div className='title orange small rounded-label orange'>
                         {capitalizeWords(String(activeCategory))}
                     </div>
