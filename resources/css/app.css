@@ -3140,6 +3140,8 @@ span:nth-child(1) span:nth-child(2){
   width: 100%;
   border-collapse: collapse;
   border-radius: 8px;
+  min-height: 200px;
+  
   overflow: hidden;
 
 }

@@ -59,7 +59,7 @@ export default function ReportPage() {
     const [issueONE, setIssueONE] = useState(issues[0]);
     const [issueTWO, setIssueTWO] = useState(issues[0]);
     const [performanceCategory, setPerformanceCategory] = useState("ALL");
-    const [performanceBrand, setPerformanceBrand] = useState();
+    const [performanceBrand, setPerformanceBrand] = useState("");
 
 
     useEffect(() => {
@@ -98,9 +98,10 @@ export default function ReportPage() {
 
     useEffect(() => {
         try {
-            const data = performanceRecords.find(item => item.category);
+            const data = performanceCategory === "ALL" ? performanceRecords.find(item => item.category) :
+                                                         performanceRecords.find(item => item.category === String(performanceCategory).toLowerCase());  
             if (data) {
-                const filteredData = data.records;
+                const filteredData = performanceBrand === "" ? data.records  : data.records.filter(p => String(p.brand).includes(performanceBrand));
                 if (filteredData) {
                     //console.log("meron::",filteredData);
                     setSelectedPerformanceRecord(filteredData);
