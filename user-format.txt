@@ -1,0 +1,13 @@
+{
+    "log_id": "U001",
+    "last_name": "Doe",
+    "first_name": "John",
+    "middle": "M",
+    "email": "john.doe@example.com",
+    "address": "123 Main St, Anytown, USA",
+    "role": "admin",
+    "number": "555-0123",
+    "age": 30,
+    "image": "",
+    "password": "yourSecurePassword123"
+}

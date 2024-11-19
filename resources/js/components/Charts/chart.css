@@ -1,0 +1,270 @@
+:root {
+  --dark-blue: #2D3748;
+  --yellow-orange: #ECB22E;
+  --yellow-3: #ebb22d;
+  --bg-dark-gray: #707275;
+  --bg-grey: #C4C4C4;
+  --light-grey: #A0AEC0;
+  --yellow-2: #ECB22E57;
+  --white-2: #D9D9D9;
+  --black-2: #373839;
+  --bg-white: #DEE6F1;
+  --input-bg-grey: hsla(0, 0%, 85%, 1);
+  --shadow: 0px 4px 4px 0px hsla(0, 0%, 0%, 0.25);
+  --box-shadow-2: 0px 4px 4px 0px #00000040;
+  --bg-gray-2: #70727585;
+  --die-yellow: #F3D695D4;
+}
+
+.pie-data-box {
+  border: 6px solid var(--die-yellow);
+  padding: 6px;
+  border-radius: 10px;
+  position: relative;
+}
+
+.pie-header,
+.pie-footer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+
+}
+
+.pie-footer {
+  margin-top: -40px;
+
+}
+
+.pie-header span {
+  color: var(--dark-blue);
+  font-weight: 700;
+  font-size: .9rem;
+  flex: 1 0 85%;
+  white-space: nowrap;
+}
+
+.piechart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: auto;
+  transform: translate(0px, -20px);
+  margin-top: 10px;
+}
+
+.circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--black-2);
+  border-radius: 100%;
+  text-align: center;
+  color: white;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  font-size: .6rem;
+}
+
+.pie-company {
+  flex: 0 0 25%;
+
+}
+
+.pie-size {
+  position: absolute;
+  right: 0;
+  z-index: 10;
+  min-width: 100px;
+}
+
+.customize-pie-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+
+.pie-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pie-legend-row span {
+  font-size: .9rem;
+}
+
+.pie-legend-box {
+  width: 8px;
+  height: 8px;
+
+}
+
+
+/* chart header */
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  height: fit-content;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px 20px;
+  width: 100% !important;
+  position: relative;
+}
+
+.chart-header span {
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--yellow-orange);
+  margin-right: 10px;
+}
+
+.chart-selectors {
+  display: flex;
+  align-items: center;
+  flex: 1 0 0;
+  justify-content: right;
+  gap: 8px;
+
+}
+
+
+/* customize legend */
+
+.customize-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: absolute;
+  right: 10px;
+  top: 20%;
+  bottom: 10px;
+ 
+ 
+ 
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-row span {
+  font-size: .8rem;
+  font-weight: 700;
+}
+
+.legend-title {
+  background-color: var(--yellow-orange);
+  padding: 3px 10px;
+  border-radius: 5px 5px 0px 0px;
+  font-size: .8rem;
+  width: 100%;
+  font-weight: 700;
+}
+
+.legend-box {
+  width: 8px;
+  height: 8px;
+  
+}
+
+
+/* Line chart */
+
+.linechart-box{
+  margin-left: -25px;
+  
+}
+.line-chart-data-box {
+  width: 100%;
+  position: relative;
+  height: 100%;
+  max-width: 800px;
+  
+}
+
+.linechart {
+  padding-right: 100px;
+}
+.linechart.line-and-bar{
+  padding-right: 15px !important;
+}
+/* mixcahrt */
+
+.mixchart-legend{
+  height: 200px;
+  overflow: hidden;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  margin-right: -10px;
+}
+.mixchart-legend::-webkit-scrollbar {
+  width: 3px;
+  border-radius: 16px;
+}
+.mixchart-legend span{
+  font-size: .7rem !important;
+  
+}
+
+.mixbarchart-container{
+  
+  overflow: hidden;
+  overflow-x: scroll;
+}
+
+/* line and bar */
+.line-and-bar{
+  
+  margin-left: -40px;
+}
+.rainbow-selectors{
+  
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  width: 100% !important;
+
+
+}
+.line-bar-header{
+  flex-direction: column;
+  justify-content: center !important;
+  display: flex;
+  align-items: flex-start;
+
+
+}
+.line-bar-header span{
+  margin-bottom: 10px;
+}
+.line-bar-header .chart-selectors{
+  margin-left: 12px;
+  width: 70%;
+}
+.line-chart-legend{
+  position: absolute;
+  top: 2px;
+  right: 5px;
+  width: 140px;
+  height: 140px;
+  overflow: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}

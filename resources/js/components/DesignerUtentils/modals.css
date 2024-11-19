@@ -1,0 +1,296 @@
+/* StatusModal.css */
+
+/* status selector */
+.status-btn-selector {
+  border-bottom: 10px solid #373839;
+  border-radius: 10px;
+  color: #373839;
+  font-weight: 600;
+  padding: 0;
+}
+
+.status-btn-selector div {
+  width: 100%;
+  padding: 2px 20px;
+  border-bottom: 5px solid #D9D9D9;
+  cursor: pointer;
+  text-align: center;
+}
+
+.status-btn-selector div:nth-child(1) {
+  background-color: #373839;
+  color: #ECB22E;
+  border: 0;
+}
+
+.status-btn-selector div:nth-child(2) {
+  background-color: #B2E87D;
+}
+
+.status-btn-selector div:nth-child(3) {
+  background-color: #E53E3E;
+}
+
+.status-btn-selector div:nth-child(4) {
+  background-color: #FFF96B;
+}
+
+.status-btn-selector div:nth-child(5) {
+  background-color: white;
+
+}
+
+.confirmation-change-state-modal {
+  background-color: #D9D9D9;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+}
+
+.confirmation-change-state-modal div:nth-child(1) {
+  width: 100%;
+  background-color: #727c86;
+  color: white;
+  padding: 10px;
+  text-align: center;
+
+}
+
+.confirmation-change-state-modal div:nth-child(2) {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  padding: 10px;
+}
+
+.confirmation-change-state-modal div:nth-child(2) button {
+  padding: 5px 20px;
+}
+
+.revision-box-modal {
+  background-color: #D9D9D9;
+  position: relative;
+}
+
+.revision-box-modal-title {
+  background-color: #373839;
+  color: white;
+  font-weight: 700;
+  font-size: 1.2rem;
+  padding: 10px;
+  text-align: center;
+  width: 100%;
+
+}
+
+.revision-box-modal-row {
+  width: 100%;
+  position: relative;
+
+}
+
+.revision-box-modal-con {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 10px;
+  flex-direction: row;
+  width: 100%;
+  padding: 15px;
+
+
+}
+
+.radio-title {
+  background-color: #ECB22E;
+  color: #373839;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 5px;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.revision-radio-con {
+  background-color: white;
+  overflow: hidden;
+  overflow-y: scroll;
+  display: flex;
+
+  justify-content: left;
+  flex-direction: column;
+  height: 241px;
+  padding: 5px;
+}
+
+.revision-box-modal label {
+  text-align: left;
+  font-size: .9rem;
+  margin-bottom: 3px;
+}
+
+.revision-box-modal input[type="radio"] {
+  margin-right: 4px;
+}
+
+.revision-submit-btn {
+  width: 100%;
+  justify-content: right;
+  align-items: center;
+  padding: 10px;
+  display: flex;
+}
+
+.revision-submit-btn button,
+.confirmation-change-state-modal button {
+  background-color: #373839;
+  border: 1px solid #ECB22E;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 20px;
+  color: #ECB22E;
+}
+
+.revision-submit-btn button:hover,
+.confirmation-change-state-modal button:hover {
+  color: #373839;
+  background-color: #ECB22E;
+  border-color: #373839;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/** Search Pattern **/
+
+.form {
+  --input-bg: #FFf;
+  /*  background of input */
+  --padding: 1.5em;
+  --rotate: 80deg;
+  /*  rotation degree of input*/
+  --gap: 2em;
+  /*  gap of items in input */
+  --icon-change-color: #15A986;
+  /*  when rotating changed icon color */
+  --height: 40px;
+  /*  height */
+  width: 200px;
+  padding-inline-end: 1em;
+  /*  change this for padding in the end of input */
+  background: var(--input-bg);
+  position: relative;
+  border-radius: 4px;
+}
+
+.form label {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: var(--height);
+}
+
+.form input {
+  width: 100%;
+  padding-inline-start: calc(var(--padding) + var(--gap));
+  outline: none;
+  background: none;
+  border: 0;
+}
+
+/* style for both icons -- search,close */
+.form svg {
+  /* display: block; */
+  color: #111;
+  transition: 0.3s cubic-bezier(.4, 0, .2, 1);
+  position: absolute;
+  height: 15px;
+}
+
+/* search icon */
+.icon {
+  position: absolute;
+  left: var(--padding);
+  transition: 0.3s cubic-bezier(.4, 0, .2, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* arrow-icon*/
+.swap-off {
+  transform: rotate(-80deg);
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* close button */
+.close-btn {
+
+  background: none;
+  border: none;
+  right: calc(var(--padding) - var(--gap));
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #111;
+  padding: 0.1em;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  transition: 0.3s;
+  opacity: 0;
+  transform: scale(0);
+  visibility: hidden;
+}
+
+.form input:focus~.icon {
+  transform: rotate(var(--rotate)) scale(1.3);
+}
+
+.form input:focus~.icon .swap-off {
+  opacity: 1;
+  transform: rotate(-80deg);
+  visibility: visible;
+  color: var(--icon-change-color);
+}
+
+.form input:focus~.icon .swap-on {
+  opacity: 0;
+  visibility: visible;
+}
+
+.form input:valid~.icon {
+  transform: scale(1.3) rotate(var(--rotate))
+}
+
+.form input:valid~.icon .swap-off {
+  opacity: 1;
+  visibility: visible;
+  color: var(--icon-change-color);
+}
+
+.form input:valid~.icon .swap-on {
+  opacity: 0;
+  visibility: visible;
+}
+
+.form input:valid~.close-btn {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  transition: 0s;
+}

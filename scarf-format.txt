@@ -1,0 +1,53 @@
+{
+    "maker_id": 1,
+    "pattern_number": "S1k3",
+    "name": "Winter Scarf",
+    "brand": "BrandY",
+"category":"scarf",
+    "outer_material": "Wool",
+    "lining_material": "Cashmere",
+    "sizes": [
+        {
+            "name": "small",
+            "measurements": {
+                "body": [
+                    {"length": 60, "width": 10}
+                ],
+                "fringers": [
+                    {"length": 5, "width": 0.5}
+                ],
+                "edges": [
+                    {"length": 1, "width": 1}
+                ]
+            }
+        },
+        {
+            "name": "medium",
+            "measurements": {
+                "body": [
+                    {"length": 70, "width": 12}
+                ],
+                "fringers": [
+                    {"length": 6, "width": 0.5}
+                ],
+                "edges": [
+                    {"length": 1, "width": 1}
+                ]
+            }
+        },
+        {
+            "name": "large",
+            "measurements": {
+                "body": [
+                    {"length": 80, "width": 15}
+                ],
+                "fringers": [
+                    {"length": 7, "width": 0.5}
+                ],
+                "edges": [
+                    {"length": 1, "width": 1}
+                ]
+            }
+        }
+    ]
+}

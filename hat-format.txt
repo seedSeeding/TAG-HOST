@@ -1,0 +1,51 @@
+{
+    "maker_id": 1,
+    "pattern_number": "4ym6",
+    "name": "Summer Hat",
+    "brand": "BrandZ",
+"category":"hat",
+    "outer_material": "Cotton",
+    "lining_material": "Polyester",
+    "sizes": [
+        {
+            "name": "small",
+            "measurements": {
+                "strap": [{"height": 2, "width": 1}],
+                "body_crown": [{"height": 10, "width": 8}],
+                "crown": [{"circumference": 56, "diameter": 18}],
+                "brim": [{"circumference": 20, "diameter": 6}],
+                "bill": [{"length": 7, "width": 3}]
+            }
+        },
+        {
+            "name": "medium",
+            "measurements": {
+                "strap": [{"height": 2.5, "width": 1.5}],
+                "body_crown": [{"height": 11, "width": 9}],
+                "crown": [{"circumference": 58, "diameter": 19}],
+                "brim": [{"circumference": 22, "diameter": 7}],
+                "bill": [{"length": 8, "width": 3.5}]
+            }
+        },
+        {
+            "name": "large",
+            "measurements": {
+                "strap": [{"height": 3, "width": 2}],
+                "body_crown": [{"height": 12, "width": 10}],
+                "crown": [{"circumference": 60, "diameter": 20}],
+                "brim": [{"circumference": 24, "diameter": 8}],
+                "bill": [{"length": 9, "width": 4}]
+            }
+        },
+        {
+            "name": "X-large",
+            "measurements": {
+                "strap": [{"height": 3.5, "width": 2.5}],
+                "body_crown": [{"height": 13, "width": 11}],
+                "crown": [{"circumference": 62, "diameter": 21}],
+                "brim": [{"circumference": 26, "diameter": 9}],
+                "bill": [{"length": 10, "width": 4.5}]
+            }
+        }
+    ]
+}
