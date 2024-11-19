@@ -309,28 +309,8 @@ public function createGlovePattern(Request $request)
             ]);
     
             $glove = Glove::findOrFail($validatedData['glove_id']);
-            GloveHistory::create([
-                'glove_id' => $glove->id,
-                'pattern_id' => $glove->pattern_id,
-                'size_id' => $glove->size_id,
+            
 
-                'palm_shell' => $glove->palm_shell, 
-                'black_shell' => $glove->black_shell,
-                'wrist' => $glove->wrist,
-                'palm_thumb' => $glove->palm_thumb,
-                'back_thumb' => $glove->back_thumb,
-                'index_finger' => $glove->index_finger,
-                'middle_finger' => $glove->middle_finger,
-                'ring_finger' => $glove->ring_finger,
-                'little_finger' => $glove->little_finger,
-
-                'approval_state' => $glove->approval_state,
-                'approval_time' => $glove->approval_time,
-                'submit_date' => $glove->submit_date,
-                'submitted' => $glove->submitted,
-                'saved' => $glove->saved,
-                'reason' => $glove->reason,
-            ]);
     
             $size = Size::updateOrCreate(
                 ['name' => $validatedData['name']],
@@ -402,8 +382,10 @@ public function createGlovePattern(Request $request)
              * @param Glove $glove
              * @return \Illuminate\Http\JsonResponse
              */
+            $pattern = Pattern::find($glove->pattern_id);
+            $pattern->touch();
             if ($submitted) {
-                $pattern = Pattern::find($glove->pattern_id);
+              
                 Notification::create([
                     'user_id' => $pattern->maker_id,
                     'message' => "Pattern: {$pattern->pattern_number} has been submitted",

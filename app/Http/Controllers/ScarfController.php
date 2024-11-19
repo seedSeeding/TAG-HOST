@@ -294,9 +294,10 @@ class ScarfController extends Controller
                 'data' => json_encode($scarf), 
                 'updated_at' => now(),                    
             ]);
-
+            $pattern = Pattern::find($scarf->pattern_id);
+            $pattern->touch();
             if($submitted){
-                $pattern = Pattern::find($scarf->pattern_id);
+              
                 Notification::create([
                     'user_id' => $pattern->maker_id,
                     'message' => "Pattern: {$pattern->pattern_number} has been submitted",
