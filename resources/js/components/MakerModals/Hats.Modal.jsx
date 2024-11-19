@@ -103,12 +103,13 @@ export default function HatsModal(props) {
         const create = async () => {
             try {
                 const response = await hatApi.createHat(pattern, partsToSave, size, submit, image);
-                console.log("Response:", response);
-                setSucess(response);
-                setLoad();
+              
+                    setSucess(response);
+                    setLoad();
+              
             } catch (error) {
                 console.log("Error:", error);
-                setError("Error: " + error.message);
+                setError( error.message);
             }
         };
 

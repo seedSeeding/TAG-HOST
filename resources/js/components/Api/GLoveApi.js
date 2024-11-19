@@ -97,7 +97,7 @@ export class GloveAPI {
             }
         } catch (error) {
             console.error(error); // Log error if the request fails
-            return 'An error occurred while creating the glove pattern.'; // Return error message
+            throw new Error('An error occurred while creating the glove pattern.'); // Return error message
         }
     }
 }

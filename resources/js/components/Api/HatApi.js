@@ -117,7 +117,7 @@ export class HatAPI {
         } catch (error) {
             // Log and return the error message in case of failure.
             console.error(error);
-            return 'An error occurred while creating the hat pattern.';
+            throw new Error('An error occurred while creating the hats pattern.');
         }
     }
 }

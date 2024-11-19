@@ -306,22 +306,35 @@ class HatController extends Controller
     
             $saved = $size->id === $validatedData['size_to_save'];
             $submitted = $validatedData['submit'] ?? false;
-
-          
-            $hat = Hat::updateOrCreate(
-                ['pattern_id' => $validatedData['id'], 'size_id' => $size->id],
-                [
-                    'strap' => isset($validatedData['strap']) ? json_encode($validatedData['strap']) : null,
-                    'body_crown' => isset($validatedData['body_crown']) ? json_encode($validatedData['body_crown']) : null,
-                    'crown' => isset($validatedData['crown']) ? json_encode($validatedData['crown']) : null,
-                    'brim' => isset($validatedData['brim']) ? json_encode($validatedData['brim']) : null,
-                    'bill' => isset($validatedData['bill']) ? json_encode($validatedData['bill']) : null,
-                    'saved' => $saved,
-                    'submitted' => $submitted,
-                    'submit_date' => $submitted ? now() : null, 
-                ]
-            );
+            $submit_date = null;
+            $message = "";
+            $hat = Hat::findOrFail($validatedData['hat_id']);
+  
+            if ($hat->submitted && $submitted) {
+                $message = "Saved";
+                $submit_date = $hat->submit_date;
+            }else if($submitted){
+                $message = "Submitted";
+            }else{
+                $message = "Saved";
+            }
             
+            $hat = $hat ? $hat : new Hat(); 
+            
+            $hat->update([
+                'pattern_id' => $validatedData['id'],
+                'size_id' => $size->id,
+                
+                'strap' => isset($validatedData['strap']) ? json_encode($validatedData['strap']) : null,
+                'body_crown' => isset($validatedData['body_crown']) ? json_encode($validatedData['body_crown']) : null,
+                'crown' => isset($validatedData['crown']) ? json_encode($validatedData['crown']) : null,
+                'brim' => isset($validatedData['brim']) ? json_encode($validatedData['brim']) : null,
+                'bill' => isset($validatedData['bill']) ? json_encode($validatedData['bill']) : null,
+                'saved' => $saved,
+                'submitted' => $submitted,
+                'submit_date' => $submitted ? now() :  $submit_date,
+            ]);
+  
             MeasurementHistory::create([
                 'category' => "hats",
                 'size_id' => $size->id,
@@ -337,10 +350,10 @@ class HatController extends Controller
                     'size' => $hat->size_id === 1 ? 'Small' : ($hat->size_id === 2 ? 'Medium' : ($hat->size_id === 3 ? 'Large' : 'X-Large')),
                     'is_read' => false,
                 ]);
-                return response()->json(['message' => "Submitted"], 201);
-               }else{
-                return response()->json(['message' => "saved"], 201);
-               }
+                return response()->json(['message' => $message], 201);
+            }else{
+                return response()->json(['message' => $message], 201);
+            }
         } catch (ValidationException $e) {
             return response()->json(['error' => $e->errors()], 422);
         } catch (\Exception $e) {

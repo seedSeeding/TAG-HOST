@@ -11,11 +11,11 @@ import {
 import { ScarfAPI } from "../Api/ScarfApi";
 import NotifCard from "../Notifications/NotifCard";
 import PartModal from "./PartModal";
-import {  getStandardMeasurements_LW } from "../StandardMeasurements/StandardMeasures";
+import { getStandardMeasurements_LW } from "../StandardMeasurements/StandardMeasures";
 import { useStateContext } from "../Providers/ContextProvider";
 
 export default function ScarvesModal(props) {
-    const {user,setLoad} = useStateContext();
+    const { user, setLoad } = useStateContext();
     const { setActiveCreateModal, activeCreateModal, setCreateOpenModal } = props;
     const [size, setSize] = useState("Medium");
     const [outerMaterialAdj, setOuterMaterialAdj] = useState(0);
@@ -35,9 +35,9 @@ export default function ScarvesModal(props) {
     const fileInputRef = useRef(null);
     const [imageView, setImageView] = useState('');
 
-    const [body, setBody] = useState(getStandardMeasurements_LW(size,"Body"));
-    const [fringers, setFringers] = useState(getStandardMeasurements_LW(size,"Fringers"));
-    const [edges, setEdges] = useState(getStandardMeasurements_LW(size,"Edges"));
+    const [body, setBody] = useState(getStandardMeasurements_LW(size, "Body"));
+    const [fringers, setFringers] = useState(getStandardMeasurements_LW(size, "Fringers"));
+    const [edges, setEdges] = useState(getStandardMeasurements_LW(size, "Edges"));
 
     const scarfApi = new ScarfAPI();
 
@@ -97,11 +97,13 @@ export default function ScarvesModal(props) {
                 const response = await scarfApi.createScarf(
                     pattern, partsToSave, size, submit, image
                 );
-                setSucess(response);
-                setLoad();
+                
+                    setSucess(response);
+                    setLoad();
+               
             } catch (error) {
                 console.log("Error:", error.message);
-                setError("Error: " + error.message);
+                setError(error.message);
             }
         };
 

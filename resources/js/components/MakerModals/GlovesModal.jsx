@@ -104,12 +104,14 @@ export default function GlovesModal(props) {
         const create = async () => {
             try {
                 const response = await gloveApi.createGlove(pattern, partsToSave, size, submit, image);
+                  
+                        setSucess(response);
+                        setLoad();
                
-                    setSucess(response);
-                    setLoad();
+                    
                 
             } catch (error) {
-                setError("Error: " + error.message);
+                setError( error.message);
             }
         };
 

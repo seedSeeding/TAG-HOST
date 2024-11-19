@@ -240,7 +240,7 @@ public function createGlovePattern(Request $request)
     } catch (ValidationException $e) {
         return response()->json(['error' => $e->errors(), 'message' => 'Validation failed.'], 422);
     } catch (\Exception $e) {
-        return response()->json(['error' => 'An error occurred while creating the glove pattern.', 'message' => $e->getMessage()], 500);
+        return response()->json(['error' => 'An error occurred whidddle creating the glove pattern.', 'message' => $e->getMessage()], 500);
     }
 }
     /**
@@ -339,7 +339,18 @@ public function createGlovePattern(Request $request)
     
             $saved = $size->id === $validatedData['size_to_save'];
             $submitted = $validatedData['submit'] ?? false;
-    
+            
+            $submit_date = null;
+            $message = "";
+
+            if ($glove->submitted && $submitted) {
+                $message = "Saved";
+                $submit_date = $glove->submit_date;
+            }else if($submitted){
+                $message = "Submitted";
+            }else{
+                $message = "Saved";
+            }
             /**
              * Update the glove with the provided data.
              *
@@ -365,7 +376,7 @@ public function createGlovePattern(Request $request)
 
                 'saved' => $saved,
                 'submitted' => $submitted,
-                'submit_date' => $submitted ? now() : null,
+               'submit_date' => $submitted ? now() :  $submit_date,
             ]);
             /**
              * Create a new record in the MeasurementHistory table with the provided data.
@@ -399,9 +410,9 @@ public function createGlovePattern(Request $request)
                     'size' => $glove->size_id === 1 ? 'Small' : ($glove->size_id === 2 ? 'Medium' : ($glove->size_id === 3 ? 'Large' : 'X-Large')),
                     'is_read' => false,
                 ]);
-                return response()->json(['message' => "Submitted"], 201);
-            } else {
-                return response()->json(['message' => "Saved"], 201);
+                return response()->json(['message' => $message], 201);
+            }else{
+                return response()->json(['message' => $message], 201);
             }
     
         } catch (ValidationException $e) {

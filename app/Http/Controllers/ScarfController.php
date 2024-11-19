@@ -261,8 +261,21 @@ class ScarfController extends Controller
     
             $saved = $size->id === $validatedData['size_to_save'];
             $submitted = $validatedData['submit'] ?? false;
-
-            $scarf = Scarf::updateOrCreate(
+            $submit_date = null;
+            $message = "";
+            $scarf = Scarf::findOrFail($validatedData['scarf_id']);
+  
+            if ($scarf->submitted && $submitted) {
+                $message = "Saved";
+                $submit_date = $scarf->submit_date;
+            }else if($submitted){
+                $message = "Submitted";
+            }else{
+                $message = "Saved";
+            }
+            
+            $scarf = $scarf ? $scarf : new Scarf(); 
+            $scarf->update(
                 ['pattern_id' => $validatedData['id'], 'size_id' => $size->id],
                 [
                     'body' => isset($validatedData['body']) ? json_encode($validatedData['body']) : null,
@@ -270,7 +283,7 @@ class ScarfController extends Controller
                     'edges' => isset($validatedData['edges']) ? json_encode($validatedData['edges']) : null,
                     'saved' => $saved,
                     'submitted' => $submitted,
-                    'submit_date' => $submitted ? now() : null, 
+                   'submit_date' => $submitted ? now() :  $submit_date,
                     // 'previous_data' => $previous->previous_data
                 ]
             );
@@ -290,10 +303,10 @@ class ScarfController extends Controller
                     'size' => $scarf->size_id === 1 ? 'Small' : ($scarf->size_id === 2 ? 'Medium' : ($scarf->size_id === 3 ? 'Large' : 'X-Large')),
                     'is_read' => false,
                 ]);
-                return response()->json(['message' => "Submitted "], 201);
+                return response()->json(['message' => $message], 201);
             }else{
-                return response()->json(['message' => "saved"], 201);
-               }
+                return response()->json(['message' => $message], 201);
+            }
         } catch (ValidationException $e) {
             return response()->json(['error' => $e->errors()], 422);
         } catch (\Exception $e) {
