@@ -124,8 +124,12 @@ export default function StatusModal(props) {
             setOpenSubmitModal(prev => !prev);
             setOpenRevision(false);
         }
-        setState(status);
-    };
+        if(status === "dropped"){
+            setState("drop");
+        }else{
+            setState(status);
+        }
+            };
 
     return (
         <>
