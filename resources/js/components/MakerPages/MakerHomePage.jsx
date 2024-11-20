@@ -109,7 +109,7 @@ export default function MakerHomePage() {
 
         if (!isNotifOpen) {
 
-            notificationApi.markAllAsReadByID(1).catch(error => console.error('Error marking notifications as read:', error));
+            notificationApi.markAllAsReadByID(user.id).catch(error => console.error('Error marking notifications as read:', error));
             setNewNotifications(false)
         }
     };
