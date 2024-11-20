@@ -19,8 +19,13 @@ const getGloveMeasurement = (partData, getStandarMeasure) => {
     const glove = [];
     for (const key in partData) {
         const measure = safeParse(partData[key]);
-        const actualName = getName(key);
+        let actualName = getName(key);
         const standardMeasure = getStandarMeasure(actualName);
+        if(actualName === "Little Finger"){
+            actualName = "Pinky Finger";
+        }else if(actualName === "Black Shell"){
+            actualName = "Back Shell";
+        }
         glove.push({
             name: actualName,
             standardLength: standardMeasure[0],
