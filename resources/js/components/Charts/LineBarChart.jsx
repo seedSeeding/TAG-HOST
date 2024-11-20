@@ -59,7 +59,7 @@ const getHatMeasurement = (partData, getStandarMeasure) => {
             });
         } else if (actualName === "Bill") {
             hatMeasurements.push({
-                name: actualName,
+                name: "Visor",
                 StandardCircumference: null,
                 StandardDiameter: null,
                 StandardHeight: null,
