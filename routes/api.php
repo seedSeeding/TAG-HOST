@@ -200,3 +200,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Measurement History Routes
     Route::get('/get-history', [MeasurementHistoryController::class, 'getHistory']); //
 });
+
+
+Route::post('/update-date', [PatternDataController::class, 'updateDate']);

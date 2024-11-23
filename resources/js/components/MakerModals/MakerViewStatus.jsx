@@ -74,7 +74,7 @@ export default function MakerViewStatus(prop) {
 
                             </div>
                             <div className="view-image-box">
-                                {data.image && (<img src={`/Storage/${data.image}`} alt="" />)}
+                                {data.image && (<img src={`/storage/${data.image}`} alt="" />)}
                             </div>
                         </div>
                         <div className="bottom-view-content">

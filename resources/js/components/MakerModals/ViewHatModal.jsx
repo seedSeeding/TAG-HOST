@@ -168,7 +168,7 @@ export default function ViewHatModal(props) {
                 <div className="maker-create-modal">
                     <div className="modal-pattern-content">
                         <div className="modal-pattern-image">
-                            {data.image && (<img src={`/Storage/${data.image}`} alt="Glove" />)}
+                            {data.image && (<img src={`/storage/${data.image}`} alt="Glove" />)}
                             <input type="file" />
                         </div>
                         <div className="modal-pattern-controls">

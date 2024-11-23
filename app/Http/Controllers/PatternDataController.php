@@ -775,6 +775,31 @@ public function getMaterialPopularity(Request $request)
     return response()->json($materials, 200);
 }
 
+
+public function updateDate()
+{
+    $patterns = Pattern::with(['scarves', 'gloves', 'hats'])->get();
+
+    foreach ($patterns as $pattern) {
+      
+        $allItems = collect()
+            ->merge($pattern->scarves)
+            ->merge($pattern->gloves)
+            ->merge($pattern->hats);
+
+  
+        $earliestItem = $allItems->sortBy('submit_date')->first();
+
+        if ($earliestItem) {
+           
+            $pattern->created_at = $earliestItem->submit_date;
+            $pattern->save();
+        }
+    }
+
+    return response()->json(['message' => "updated", 'data' => $patterns], 200);
+}
+
 /************************************************************************************************************************ */
 public function getBrandList()
 {
