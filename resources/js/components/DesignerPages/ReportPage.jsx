@@ -16,7 +16,7 @@ export default function ReportPage() {
     const [brandList, setBrandList] = useState([]);
     const sizes = ['Small', 'Medium', 'Large', 'X-Large'];
     const analysisSizes = ['All','Small', 'Medium', 'Large', 'X-Large'];
-    const [parts,setParts] = useState();
+    const [parts,setParts] = useState([]);
     const categories = ['Gloves', 'Hats', 'Scarves'];
 
     const [notifications, setNotifications] = useState([]);
@@ -100,6 +100,7 @@ export default function ReportPage() {
         getBrandList();
         getStatusOfThePattern();
         getPeformanceRecords();
+        setAnalysisCategory("Gloves")
 
     }, []);
     useEffect(() => {
