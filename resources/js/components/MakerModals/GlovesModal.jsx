@@ -19,8 +19,8 @@ export default function GlovesModal(props) {
     const [name, setName] = useState('');
     const [category, setCategory] = useState('gloves');
     const [brand, setBrand] = useState('');
-    const [liningMaterial, setLiningMaterial] = useState("Lining Materrial");
-    const [outerMaterial, setOuterMaterial] = useState("Outer Materrial");
+    const [liningMaterial, setLiningMaterial] = useState("Lining Material");
+    const [outerMaterial, setOuterMaterial] = useState("Outer Material");
 
     const [image, setImage] = useState('');
     const fileInputRef = useRef(null);
@@ -46,8 +46,8 @@ export default function GlovesModal(props) {
             if (!name) return "Name is required.";
             if (!category) return "Category is required.";
             if (!brand) return "Brand is required.";
-            if (outerMaterial === "Outer Materrial") return "Outer material is required.";
-            if (liningMaterial === "Lining Materrial") return "Lining material is required.";
+            if (outerMaterial === "Outer Material") return "Outer material is required.";
+            if (liningMaterial === "Lining Material") return "Lining material is required.";
 
 
             const parts = {
@@ -235,7 +235,7 @@ export default function GlovesModal(props) {
                             </div>
                             <div className="modal-control-box">
                                 <select name="" id="" onChange={handleOuterChange}>
-                                    <option value="Outer Materrial">Outer Materrial</option>
+                                    <option value="Outer Material">Outer Material</option>
                                     {materialList.map((value, index) => (
                                         <option value={value} key={index}>{value}</option>
                                     ))}
@@ -244,7 +244,7 @@ export default function GlovesModal(props) {
                             </div>
                             <div className="modal-control-box">
                                 <select name="" id="" onChange={handleLiningChange}>
-                                    <option value="Lining Materrial">Lining Materrial</option>
+                                    <option value="Lining Material">Lining Material</option>
                                     {materialList.map((value, index) => (
                                         <option value={value} key={index}>{value}</option>
                                     ))}
@@ -499,7 +499,7 @@ export default function GlovesModal(props) {
                                     <div className="messure-row">
                                         <div className="modal-part-view">
                                             <PartModal image={"/partsImages/littlefinger.png"} partName={"Little Finger"} />
-                                            <span>Little Finger</span>
+                                            <span>Pinky Finger</span>
                                         </div>
                                         <div className="messure-row-inputs standard">
                                             <div>

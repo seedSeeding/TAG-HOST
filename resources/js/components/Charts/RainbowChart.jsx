@@ -58,7 +58,7 @@ export default function RainbowChart() {
         const res = await dataAPI.getBrandList();
         setBrandList(res);
       } catch (error) {
-        alert("Error fetching brand list: " + error);
+        //alert("Error fetching brand list: " + error);
       }
     };
 

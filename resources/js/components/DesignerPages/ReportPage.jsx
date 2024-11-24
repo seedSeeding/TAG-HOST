@@ -15,13 +15,20 @@ export default function ReportPage() {
     const notificationApi = new NotificationAPi();
     const [brandList, setBrandList] = useState([]);
     const sizes = ['Small', 'Medium', 'Large', 'X-Large'];
-    const parts = partList;
+    const analysisSizes = ['All','Small', 'Medium', 'Large', 'X-Large'];
+    const [parts,setParts] = useState();
     const categories = ['Gloves', 'Hats', 'Scarves'];
 
     const [notifications, setNotifications] = useState([]);
     const [isNotifOpen, setIsNotifOpen] = useState(false);
     const [newNotifications, setNewNotifications] = useState(false);
+    const glovesParts = ["Palm Shell", "Back Shell", "Palm Thumb", "Back Thumb", "Index Finger",
+        "Middle Finger", "Ring Finger", "Little Finger", "Wrist"
+    ];
+    
 
+    const hatsParts = ['Strap', 'Body Crown', 'Crown', 'Brim', 'Bill'];
+    const scarvesParts = ['Body', 'Fringers', 'Edges'];
     const issues = [
         "Too Tight",
         "Too Loose",
@@ -51,7 +58,7 @@ export default function ReportPage() {
     const [selectedPerformanceRecord, setSelectedPerformanceRecord] = useState([]);
 
     const [analysisCategory, setAnalysisCategory] = useState("Gloves");
-    const [analysisSize, setAnalysisSize] = useState("Small");
+    const [analysisSize, setAnalysisSize] = useState("All");
     const [analysisPartONE, setAnalysisPartONE] = useState('Palm Shell');
     const [analysisPartTWO, setAnalysisPartTWO] = useState('Palm Shell');
     const [measurementONE, setMeasurementONE] = useState(measurements[0]);
@@ -95,7 +102,15 @@ export default function ReportPage() {
         getPeformanceRecords();
 
     }, []);
-
+    useEffect(() => {
+        if(analysisCategory === "Gloves"){
+            setParts(glovesParts);
+        }else if(analysisCategory === "Hats"){
+            setParts(hatsParts);
+        }else{  
+            setParts(scarvesParts);
+        }
+    },[analysisCategory]);
     useEffect(() => {
         try {
             const data = performanceCategory === "ALL" ? performanceRecords.find(item => item.category) :
@@ -293,7 +308,7 @@ export default function ReportPage() {
                             <Selector className="pattern-analysis-report-box" title={"Fit Issue Anylysis"} fixedOpen={true}>
                                 <div className="analysis-report-row ">
                                     <CustomSelector values={categories} setValue={setAnalysisCategory} value={analysisCategory} />
-                                    <CustomSelector values={sizes} setValue={setAnalysisSize} value={analysisSize} />
+                                    <CustomSelector values={analysisSizes} setValue={setAnalysisSize} value={analysisSize} />
                                 </div>
                                 <div className="analysis-report-row">
                                     <span>Brand Company</span>

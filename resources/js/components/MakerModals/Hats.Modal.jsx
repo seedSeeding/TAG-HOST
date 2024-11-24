@@ -225,7 +225,7 @@ export default function HatsModal(props) {
                             </div>
                             <div className="modal-control-box">
                                 <select name="" id="" onChange={handleOuterChange}>
-                                    <option value="Outer Materrial">Outer Materrial</option>
+                                    <option value="Outer Material">Outer Material</option>
                                     {materialList.map((value, index) => (
                                         <option value={value} key={index}>{value}</option>
                                     ))}
@@ -234,7 +234,7 @@ export default function HatsModal(props) {
                             </div>
                             <div className="modal-control-box">
                                 <select name="" id="" onChange={handleLiningChange}>
-                                    <option value="Lining Materrial">Lining Materrial</option>
+                                    <option value="Lining Material">Lining Material</option>
                                     {materialList.map((value, index) => (
                                         <option value={value} key={index}>{value}</option>
                                     ))}

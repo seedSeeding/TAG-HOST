@@ -27,7 +27,7 @@ const UpdateImage = ({ pattern_number , setLoad}) => {
         },
       });
 
-      alert(response.data.message);
+     // alert(response.data.message);
       setLoad(true);
     } catch (err) {
       if (err.response && err.response.status === 422) {

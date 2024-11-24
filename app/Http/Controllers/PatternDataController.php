@@ -925,7 +925,40 @@ public function getIssueAnalysis(Request $request)
             // Iterate over the selected category (gloves, scarves, or hats)
             foreach ($pattern->{$category} as $item) {
                 // Only consider items that are in the revision state and match the size_id
-                if ($item->approval_state === 'revision' && $item->size_id === $size_id) {
+                if($size_id === 5){
+                    // Split the reasons by commas
+                    $reason = explode(',', $item->reason);
+
+                    // Convert the reason array back to a string
+                    $reasonString = implode(',', $reason);
+
+                    // Check if the same reason already exists in the data
+                    $existingReasonIndex = null;
+                    foreach ($datas[$pattern->brand] as $index => $entry) {
+                        if ($entry['reasons'] === $reasonString) {
+                            $existingReasonIndex = $index;
+                            break;
+                        }
+                    }
+
+                    // If the reason already exists, just increment the frequency
+                    if ($existingReasonIndex !== null) {
+                        $datas[$pattern->brand][$existingReasonIndex]['frequencies']['frequency']++;
+                    } else {
+                        // If the reason doesn't exist, add it as a new entry
+                        $datas[$pattern->brand][] = [
+                            "reasons" => $reasonString,
+                            "frequencies" => [
+                                "part" => $reason[0],     // The part of the pattern being analyzed
+                                "measure" => $reason[1] ?? '',  // The measurement (optional)
+                                "reason" => $reason[2] ?? '',    // The specific reason (optional)
+                                "frequency" => 1,          // Initial frequency count for this reason
+                                "percentage" => 0          // Placeholder for the percentage calculation
+                            ]
+                        ];
+                    }
+                }
+                else if($item->approval_state === 'revision' && $item->size_id === $size_id) {
                     // Split the reasons by commas
                     $reason = explode(',', $item->reason);
 

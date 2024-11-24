@@ -58,7 +58,7 @@ export default function MakerHomePage() {
                     setLoad(false);
                 }
             }).catch((error) => {
-                alert(error.error);
+                //alert(error.error);
             });
 
     }, [user,reload])

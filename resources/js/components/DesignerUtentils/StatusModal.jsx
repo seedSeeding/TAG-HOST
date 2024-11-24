@@ -125,7 +125,7 @@ export default function StatusModal(props) {
             setOpenRevision(false);
         }
         if(status === "dropped"){
-            setState("drop");
+            setState("dropped");
         }else{
             setState(status);
         }

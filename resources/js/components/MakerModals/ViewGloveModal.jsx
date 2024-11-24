@@ -209,7 +209,7 @@ export default function ViewGlovesModal(props) {
                             </div>
                             <div className="modal-control-box">
                                 <select name="" id="" value={outerMaterial || ''} disabled>
-                                    <option value="Outer Materrial">Outer Materrial</option>
+                                    <option value="Outer Material">Outer Material</option>
                                     {materialList.map((value, index) => (
                                         <option value={value} key={index}>{value}</option>
                                     ))}
@@ -218,7 +218,7 @@ export default function ViewGlovesModal(props) {
                             </div>
                             <div className="modal-control-box">
                                 <select name="" id="" value={liningMaterial || ''} disabled>
-                                    <option value="Lining Materrial" >Lining Materrial</option>
+                                    <option value="Lining Material" >Lining Material</option>
                                     {materialList.map((value, index) => (
                                         <option value={value} key={index}>{value}</option>
                                     ))}
@@ -466,7 +466,7 @@ export default function ViewGlovesModal(props) {
                                     <div className="messure-row">
                                         <div className="modal-part-view">
                                         <PartModal image={"/partsImages/littlefinger.png"} partName={"Little Finger"} />
-                                            <span>Little Finger</span>
+                                            <span>Pinky Finger</span>
                                         </div>
                                         <div className="messure-row-inputs">
                                             <div>

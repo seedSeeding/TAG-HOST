@@ -207,7 +207,7 @@ export default function StatusGLoveModal(prop) {
                                     <div className="messure-row">
                                         <div className="modal-part-view">
                                             <PartModal image={"/partsImages/littlefinger.png"} partName={"Little Finger"} />
-                                            <span>Little Finger</span>
+                                            <span>Pinky Finger</span>
                                         </div>
                                         <div className="messure-row-inputs">
                                             <div>

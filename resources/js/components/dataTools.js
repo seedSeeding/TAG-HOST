@@ -482,7 +482,9 @@ export const getBrandList = (data) => {
 export const getSizeID = (size) => {
     // Convert the size string to lowercase for case-insensitive comparison
     size = size.toLowerCase();
-
+    if(size === "All"){
+        return 5;
+    }
     // Return the corresponding size ID based on the size string
     return size === "small" ? 1 : size === "medium" ? 2 : size === "large" ? 3 : 4;
 };

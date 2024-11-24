@@ -68,7 +68,7 @@ export default function DataPatternPage() {
                 setBrandList(res);
                 setBrand(res[0]);
             } catch (error) {
-                alert("Error fetching brand list: " + error);
+               // alert("Error fetching brand list: " + error);
             }
         };
         getBrandList();
