@@ -169,7 +169,9 @@ export default function ReportPage() {
             const data = analysisRecords[company]?.find(record => {
                 const reason = record.reasons.split(",");
                 //console.log("reason ::", reason);
-
+                console.log("reasones",reason);
+                console.log("selected parts", part,measure,issue);
+                console.log("issue parts",  reason[0], reason[1], reason[2]);
                 if (reason.length < 3) {
                     console.warn("Record does not have expected parts:", record);
                     return false;
