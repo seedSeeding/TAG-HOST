@@ -111,8 +111,13 @@ export default function ReportPage() {
         }else{  
             setParts(scarvesParts);
         }
-    },[analysisCategory]);
 
+    },[analysisCategory]);
+    useEffect(() => {
+        setAnalysisPartONE(parts[0]);
+        setAnalysisPartTWO(parts[0]);
+    },[parts]);
+    
     useEffect(() => {
         try {
             const data = performanceCategory === "ALL" ? performanceRecords.find(item => item.category) :
