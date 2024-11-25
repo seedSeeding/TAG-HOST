@@ -106,18 +106,21 @@ export default function ReportPage() {
     useEffect(() => {
         if(analysisCategory === "Gloves"){
             setParts(glovesParts);
+            setAnalysisPartONE(glovesParts[0]);
+            setAnalysisPartTWO(glovesParts[0]);
         }else if(analysisCategory === "Hats"){
             setParts(hatsParts);
+             setAnalysisPartONE(hatsParts[0]);
+            setAnalysisPartTWO(hatsParts[0]);
         }else{  
             setParts(scarvesParts);
+             setAnalysisPartONE(scarvesParts[0]);
+            setAnalysisPartTWO(scarvesParts[0]);
         }
 
     },[analysisCategory]);
-    useEffect(() => {
-        setAnalysisPartONE(parts[0]);
-        setAnalysisPartTWO(parts[0]);
-    },[parts]);
-    
+  
+
     useEffect(() => {
         try {
             const data = performanceCategory === "ALL" ? performanceRecords.find(item => item.category) :
