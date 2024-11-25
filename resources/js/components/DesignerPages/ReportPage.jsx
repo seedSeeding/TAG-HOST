@@ -28,7 +28,7 @@ export default function ReportPage() {
     
 
     const hatsParts = ['Strap', 'Body Crown', 'Crown', 'Brim', 'Bill'];
-    const scarvesParts = ['Body', 'Fringers', 'Edges'];
+    const scarvesParts = ['Body', 'Fringes', 'Edges'];
     const issues = [
         "Too Tight",
         "Too Loose",
@@ -112,6 +112,7 @@ export default function ReportPage() {
             setParts(scarvesParts);
         }
     },[analysisCategory]);
+
     useEffect(() => {
         try {
             const data = performanceCategory === "ALL" ? performanceRecords.find(item => item.category) :
@@ -136,13 +137,13 @@ export default function ReportPage() {
             try {
                 const data = await dataAPI.getAnalysisReport(analysisCategory, analysisSize);
                 setAnalysisRecords(data);
-                //console.log("data::",data);
+                console.log("analysis::",data);
             } catch (error) {
                 console.log("error::", error);
             }
         };
         getAnalysisReport();
-    }, [analysisCategory, analysisSize])
+    }, [analysisCategory, analysisSize,company])
 
     useEffect(() => {
         const getRecords = (brand, size) => {

@@ -465,7 +465,7 @@ export default function ViewGlovesModal(props) {
                                     {/* Little Finger */}
                                     <div className="messure-row">
                                         <div className="modal-part-view">
-                                        <PartModal image={"/partsImages/littlefinger.png"} partName={"Little Finger"} />
+                                        <PartModal image={"/partsImages/littlefinger.png"} partName={"Pinky Finger"} />
                                             <span>Pinky Finger</span>
                                         </div>
                                         <div className="messure-row-inputs">

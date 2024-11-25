@@ -925,7 +925,7 @@ public function getIssueAnalysis(Request $request)
             // Iterate over the selected category (gloves, scarves, or hats)
             foreach ($pattern->{$category} as $item) {
                 // Only consider items that are in the revision state and match the size_id
-                if($size_id === 5){
+                if($item->approval_state === 'revision' && $size_id === 5){
                     // Split the reasons by commas
                     $reason = explode(',', $item->reason);
 

@@ -419,7 +419,7 @@ export default function HatsModal(props) {
 
                                     <div className="messure-row">
                                         <div className="modal-part-view">
-                                        <PartModal image={"/partsImages/bill.png"} partName={"Bill"} />
+                                        <PartModal image={"/partsImages/bill.png"} partName={"Visor"} />
                                             <span>Visor</span>
                                         </div>
                                         <div className="messure-row-inputs standard">
