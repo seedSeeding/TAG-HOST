@@ -150,7 +150,7 @@ export const check_HW = (value) => {
 }
 
 export const measurementList = [
-    'Length', 'Width', 'height', 'Circumference', 'Diameter'
+    'Length', 'Width', 'Height', 'Circumference', 'Diameter'
 ];
 export const materialAdjustments = {
     Leather: 0.197,
@@ -482,7 +482,7 @@ export const getBrandList = (data) => {
 export const getSizeID = (size) => {
     // Convert the size string to lowercase for case-insensitive comparison
     size = size.toLowerCase();
-    if(size === "All"){
+    if(size === "all"){
         return 5;
     }
     // Return the corresponding size ID based on the size string
