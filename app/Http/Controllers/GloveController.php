@@ -150,7 +150,7 @@ public function createGlovePattern(Request $request)
     try {
         $validator = Validator::make($request->all(), [
             'maker_id' => 'required|exists:users,id',
-            'pattern_number' => 'required|string|unique:patterns,pattern_number',
+            'pattern_number' => 'required|string',
             'name' => 'required|string',
             'category' => 'required|string',
             'brand' => 'required|string',
@@ -174,64 +174,118 @@ public function createGlovePattern(Request $request)
         $validatedData = $validator->validated();
         $imagePath = $request->file('image')->store('images', 'public');
         $validatedData['image'] = $imagePath;
-
-        // Create the pattern
-        $pattern = Pattern::create([
-            'maker_id' => $validatedData['maker_id'],
-            'pattern_number' => $validatedData['pattern_number'],
-            'name' => $validatedData['name'],
-            'brand' => $validatedData['brand'],
-            'category' => $validatedData['category'],
-            'outer_material' => $validatedData['outer_material'],
-            'lining_material' => $validatedData['lining_material'],
-            'image' => $validatedData['image'],
-        ]);
+        $pattern = Pattern::where('pattern_number', $validatedData['pattern_number'])->first();
+        if (!$pattern) {
+            $pattern = Pattern::create([
+                'maker_id' => $validatedData['maker_id'],
+                'pattern_number' => $validatedData['pattern_number'],
+                'name' => $validatedData['name'],
+                'brand' => $validatedData['brand'],
+                'category' => $validatedData['category'],
+                'outer_material' => $validatedData['outer_material'],
+                'lining_material' => $validatedData['lining_material'],
+                'image' => $validatedData['image'],
+            ]);
+        }
+        // // Create the pattern
+        // $pattern = Pattern::create([
+        //     'maker_id' => $validatedData['maker_id'],
+        //     'pattern_number' => $validatedData['pattern_number'],
+        //     'name' => $validatedData['name'],
+        //     'brand' => $validatedData['brand'],
+        //     'category' => $validatedData['category'],
+        //     'outer_material' => $validatedData['outer_material'],
+        //     'lining_material' => $validatedData['lining_material'],
+        //     'image' => $validatedData['image'],
+        // ]);
 
         $sizeLabelMap = [1 => 'Small', 2 => 'Medium', 3 => 'Large', 4 => 'X-Large'];
-        $sizeID = 1;
-
+        $sizeID = 1; 
         foreach ($validatedData['sizes'] as $sizeData) {
-            $size = Size::firstOrCreate(['name' => $sizeData['name']]);
+            $size = Size::updateOrCreate(
+                ['name' => $sizeData['name']],
+                ['pattern_id' => $pattern->id] 
+            );
             $save = ($sizeID === (int) $request->size_to_save);
             $submitted = ($sizeID === (int) $request->size_to_save) && filter_var($validatedData['submit'], FILTER_VALIDATE_BOOLEAN);
-
-            $glove = Glove::create([
-                'pattern_id' => $pattern->id,
-                'size_id' => $size->id,
-                'palm_shell' => json_encode($sizeData['measurements']['palm_shell']),
-                'black_shell' => json_encode($sizeData['measurements']['black_shell']),
-                'wrist' => json_encode($sizeData['measurements']['wrist']),
-                'palm_thumb' => json_encode($sizeData['measurements']['palm_thumb']),
-                'back_thumb' => json_encode($sizeData['measurements']['back_thumb']),
-                'index_finger' => json_encode($sizeData['measurements']['index_finger']),
-                'middle_finger' => json_encode($sizeData['measurements']['middle_finger']),
-                'ring_finger' => json_encode($sizeData['measurements']['ring_finger']),
-                'little_finger' => json_encode($sizeData['measurements']['little_finger']),
-                'approval_state' => 'pending',
-                'saved' => $save,
-                'submitted' => $submitted,
-                'submit_date' => $submitted ? now() : null,
-            ]);
-
-            if ($save) {
-                MeasurementHistory::create([
-                    'category' => 'gloves',
+            $glove = Glove::where(['pattern_id' => $pattern->id, 'size_id' => $sizeID])->first();
+            if($glove && $save){
+                    $glove->update(
+                     [ 'pattern_id' => $pattern->id,
+                     'size_id' => $size->id,
+                       'palm_shell' => json_encode($sizeData['measurements']['palm_shell']),
+                          'black_shell' => json_encode($sizeData['measurements']['black_shell']),
+                          'wrist' => json_encode($sizeData['measurements']['wrist']),
+                          'palm_thumb' => json_encode($sizeData['measurements']['palm_thumb']),
+                          'back_thumb' => json_encode($sizeData['measurements']['back_thumb']),
+                          'index_finger' => json_encode($sizeData['measurements']['index_finger']),
+                          'middle_finger' => json_encode($sizeData['measurements']['middle_finger']),
+                          'ring_finger' => json_encode($sizeData['measurements']['ring_finger']),
+                          'little_finger' => json_encode($sizeData['measurements']['little_finger']),
+                          'approval_state' => 'pending',
+                          'saved' => $save,
+                          'submitted' => $submitted,
+                          'submit_date' => $submitted ? now() : null,   ]    
+                    );
+              
+                
+    
+                if ($save) {
+                    MeasurementHistory::create([
+                        'category' => 'gloves',
+                        'size_id' => $size->id,
+                        'pattern_id' => $pattern->id,
+                        'data' => json_encode($glove),
+                        'updated_at' => now(),
+                    ]);
+                }
+    
+                if ($submitted) {
+                    Notification::create([
+                        'user_id' => $pattern->maker_id,
+                        'message' => "Pattern: {$pattern->pattern_number} has been submitted",
+                        'size' => $sizeLabelMap[$glove->size_id] ?? 'Unknown',
+                        'is_read' => false,
+                    ]);
+                }
+    
+            }else if(!$glove){
+                $glove = Glove::create(
+                    ['pattern_id' => $pattern->id,
                     'size_id' => $size->id,
-                    'pattern_id' => $pattern->id,
-                    'data' => json_encode($glove),
-                    'updated_at' => now(),
+                    'palm_shell' => json_encode($sizeData['measurements']['palm_shell']),
+                    'black_shell' => json_encode($sizeData['measurements']['black_shell']),
+                    'wrist' => json_encode($sizeData['measurements']['wrist']),
+                    'palm_thumb' => json_encode($sizeData['measurements']['palm_thumb']),
+                    'back_thumb' => json_encode($sizeData['measurements']['back_thumb']),
+                    'index_finger' => json_encode($sizeData['measurements']['index_finger']),
+                    'middle_finger' => json_encode($sizeData['measurements']['middle_finger']),
+                    'ring_finger' => json_encode($sizeData['measurements']['ring_finger']),
+                    'little_finger' => json_encode($sizeData['measurements']['little_finger']),
+                    'approval_state' => 'pending',
+                    'saved' => $save,
+                    'submitted' => $submitted,
+                    'submit_date' => $submitted ? now() : null,
                 ]);
+                if ($save) {
+                    MeasurementHistory::create([
+                        'category' => 'gloves',
+                        'size_id' => $size->id,
+                        'pattern_id' => $pattern->id,
+                        'data' => json_encode($glove),
+                        'updated_at' => now(),
+                    ]);
+                }
+    
+                if ($submitted) {
+                    Notification::create([
+                        'user_id' => $pattern->maker_id,
+                        'message' => "Pattern: {$pattern->pattern_number} has been submitted",
+                        'size' => $sizeLabelMap[$glove->size_id] ?? 'Unknown',
+                        'is_read' => false,
+                    ]);
+                }
             }
-
-            if ($submitted) {
-                Notification::create([
-                    'user_id' => $pattern->maker_id,
-                    'message' => "Pattern: {$pattern->pattern_number} has been submitted",
-                    'size' => $sizeLabelMap[$glove->size_id] ?? 'Unknown',
-                    'is_read' => false,
-                ]);
-            }
-
             $sizeID++;
         }
 
