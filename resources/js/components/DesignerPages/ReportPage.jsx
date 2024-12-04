@@ -173,6 +173,7 @@ export default function ReportPage() {
 
 
             });
+            console.log("issues::",analysisRecords[company]);
         } catch (error) {
             console.log(error);
         }
