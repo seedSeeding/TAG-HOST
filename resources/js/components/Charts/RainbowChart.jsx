@@ -49,7 +49,7 @@ export default function RainbowChart() {
   const [materials, setMaterials] = useState([]);
   const [data, setData] = useState([]);
   const dataAPI = new DataApi();
-  const [filteredMaterials,setFilteredMaterials] = useState([]);
+  const [filteredMaterials, setFilteredMaterials] = useState([]);
   useEffect(() => {
     const getBrandList = async () => {
       try {
@@ -104,24 +104,24 @@ export default function RainbowChart() {
     // Round to the nearest integer and format the tick
     return Math.floor(tickItem);
   };
-  
+
   useEffect(() => {
     if (data.length > 0) {
       const filtered = Object.keys(data[0])
         .filter((key) => {
-          if( key !== "name" && (selectedMaterial === "ALL" || selectedMaterial === key)){
-            if(data[0][key] > 0){
+          if (key !== "name" && (selectedMaterial === "ALL" || selectedMaterial === key)) {
+            if (data[0][key] > 0) {
               return true;
             }
           }
         });
-      
+
       setFilteredMaterials(filtered);
     } else {
       setFilteredMaterials([]);
     }
-  }, [data, selectedMaterial,brand]);
-  
+  }, [data, selectedMaterial, brand]);
+
   return (
     <div className="line-chart-data-box">
       <div className="chart-header line-bar-header">
@@ -146,12 +146,18 @@ export default function RainbowChart() {
               fontSize={9}
               textAnchor="end"
               angle={-45}
+              
               interval={0}
-              label={{ value: 'Brand Name', position: 'bottom', fontSize: 12 }}
-             
+              label={{ value: 'Brand Name', position: 'bottom', fontSize: 12 ,fontWeight: 'bold',fill:"black"}}
+
             />
-          {/* <Tooltip/> */}
-            <YAxis tickFormatter={formatXAxis} tick={{ fontSize: 12 }} label={{ value: 'Popularity', angle: -90, position: 'insideLeft', fontSize: 12 }} />
+            {/* <Tooltip/> */}
+            <YAxis
+              tickFormatter={formatXAxis}
+              tick={{ fontSize: 12, fontWeight: 'bold' }}
+              label={{ value: 'Popularity', angle: -90, position: 'insideLeft', fontSize: 12, fontWeight: 'bold' ,fill:"black"}}
+            />
+
             {data.length > 0 && data[0] && Object.keys(data[0]).filter(key => key !== "name").map((material, index) => {
               if (selectedMaterial === "ALL") {
                 return (

@@ -151,13 +151,13 @@ function createDefault() {
     return measurementKeys;
 }
 const getMeasure = (part, adjustment) => {
-    if (!part) return null;
+    
     return {
-        length: part.length ? part.length + adjustment : null,
-        width: part.width ? part.width + adjustment : null,
-        height: part.height ? part.height + adjustment : null,
-        circumference: part.circumference ? part.circumference + adjustment : null,
-        diameter: part.diameter ? part.diameter + adjustment : null,
+        length: parseFloat(part.length) + adjustment,
+        width: parseFloat(part.width) + adjustment ,
+        height: parseFloat(part.height) + adjustment ,
+        circumference: parseFloat(part.circumference) + adjustment,
+        diameter: parseFloat(part.diameter) + adjustment ,
     };
 };
 function getDefaultInitial(parts, currentSizeID, sizeID) {

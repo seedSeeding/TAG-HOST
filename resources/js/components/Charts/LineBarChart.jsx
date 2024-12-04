@@ -229,38 +229,93 @@ export default function LineBarChart() {
     const getStatusColor = (standard, adjusted) => {
         if (!standard || !adjusted) return null;
         const deviation = Math.abs(standard - adjusted) / standard;
+        if(standard === adjusted){
+            return '#B2E87D';
+        }
         return deviation <= 0.05 ? '#B2E87D' : '#E87D7D';
     };
     const getStatusLabel = (standard, adjusted) => {
-        if (!standard || !adjusted) return "Data missing";
+        if (!standard || !adjusted) return "No Data";
         const deviation = Math.abs(standard - adjusted) / standard;
+        if(standard === adjusted){
+            return "On Target" ;
+        }
         return deviation <= 0.05 ? "On Target" : "Off Target";
     };
     const renderTooltip = (props) => {
         const { payload } = props;
-
+    
         if (payload && payload.length > 0) {
-            const { name, standardLength, adjustedLength, standardWidth, adjustedWidth } = payload[0].payload;
-
+            const {
+                name,
+                standardLength,
+                adjustedLength,
+                standardWidth,
+                adjustedWidth,
+                StandardCircumference,
+                adjustedCircumference,
+                StandardDiameter,
+                adjustedDiameter,
+                StandardHeight,
+                adjustedHeight
+            } = payload[0].payload;
+    
             // Get the status based on standard and adjusted values
             const lengthStatus = getStatusLabel(standardLength, adjustedLength);
             const widthStatus = getStatusLabel(standardWidth, adjustedWidth);
+            const circumferenceStatus = getStatusLabel(StandardCircumference, adjustedCircumference);
+            const diameterStatus = getStatusLabel(StandardDiameter, adjustedDiameter);
+            const heightStatus = getStatusLabel(StandardHeight, adjustedHeight);
+            
+            if(StandardHeight && standardWidth){
+                return (
+                    <div className="custom-tooltip">
+                      
+                        <p>Standard Height: {StandardHeight} mm</p>
+                        <p>Adjusted Height: {adjustedHeight} mm</p>
+                        <p>Status: <span style={{ color: heightStatus === "On Target" ? "#B2E87D" : "#E87D7D" }}>{heightStatus}</span></p>
 
+                        <p>Standard Width: {standardWidth} mm</p>
+                    <p>Adjusted Width: {adjustedWidth} mm</p>
+                    <p>Status: <span style={{ color: widthStatus === "On Target" ? "#B2E87D" : "#E87D7D" }}>{widthStatus}</span></p>
+                    </div>
+                );
+            }
+
+            if(StandardCircumference || StandardDiameter || StandardHeight){
+                return (
+                    <div className="custom-tooltip">
+                        <p className="part">{name}</p>
+                        <p>Standard Circumference: {StandardCircumference} mm</p>
+                        <p>Adjusted Circumference: {adjustedCircumference} mm</p>
+                        <p>Status: <span style={{ color: circumferenceStatus === "On Target" ? "#B2E87D" : "#E87D7D" }}>{circumferenceStatus}</span></p>
+        
+                        <p>Standard Diameter: {StandardDiameter} mm</p>
+                        <p>Adjusted Diameter: {adjustedDiameter} mm</p>
+                        <p>Status: <span style={{ color: diameterStatus === "On Target" ? "#B2E87D" : "#E87D7D" }}>{diameterStatus}</span></p>
+                    </div>
+                );
+            }
             return (
                 <div className="custom-tooltip">
-                    <p className='part'>{name}</p>
+                    <p className="part">{name}</p>
+    
                     <p>Standard Length: {standardLength} mm</p>
                     <p>Adjusted Length: {adjustedLength} mm</p>
-                    <p  >Status: <span style={{ color:lengthStatus === "On Target" ? "#B2E87D" : "#E87D7D"}}> {lengthStatus}</span></p>
+                    <p>Status: <span style={{ color: lengthStatus === "On Target" ? "#B2E87D" : "#E87D7D" }}>{lengthStatus}</span></p>
+    
                     <p>Standard Width: {standardWidth} mm</p>
                     <p>Adjusted Width: {adjustedWidth} mm</p>
-                    <p >Status: <span style={{ color:widthStatus === "On Target" ? "#B2E87D" : "#E87D7D"}}>{widthStatus}</span></p>
+                    <p>Status: <span style={{ color: widthStatus === "On Target" ? "#B2E87D" : "#E87D7D" }}>{widthStatus}</span></p>
+    
+
                 </div>
             );
         }
-
+    
         return null;
     };
+    
     return (
         <div className='line-chart-data-box'>
             <div className='chart-header line-bar-header'>
@@ -303,10 +358,10 @@ export default function LineBarChart() {
                             textAnchor="end"
                             angle={-45}
                             interval={0}
-                            label={{ value: 'Parts', position: 'insideBottom', offset: -5, fontSize: 14, color: "#ECB22E" }}
+                            label={{ value: 'Parts', position: 'insideBottom', offset: -5, fontSize: 14, color: "#ECB22E", fontWeight: 'bold' ,fill:"black"}}
                         />
 
-                        <YAxis fontSize={9} textAnchor="middle" label={{ value: 'Measurements(inches)', angle: -90, fontSize: 14, color: "#ECB22E" }} />
+                        <YAxis fontSize={9}   tick={{ fontSize: 12, fontWeight: 'bold' }} textAnchor="middle" label={{ value: 'Measurements(inches)', angle: -90, fontSize: 14, color: "#ECB22E" , fontWeight: 'bold' ,fill:"black"  }} />
                         <Tooltip content={renderTooltip} />
 
                         {/* <Tooltip

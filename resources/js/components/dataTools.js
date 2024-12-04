@@ -2,17 +2,14 @@ import { height } from "@fortawesome/free-regular-svg-icons/faAddressBook";
 const parseData = (data) => {
     return JSON.parse(data);
 }
-export const generateRandomPN = () => { 
-    const min = Math.ceil(6);
-    const max = Math.floor(8);
+export const generateRandomPN = () => {
     let randoms = "";
-    const length =  Math.floor(Math.random() * (max - min + 1) + min);
-    // alert(length)
-    for(let i = 0; i < 4 ; i++){
-        randoms = randoms + String(Math.floor(Math.random() * (Math.floor(10) - Math.ceil(0) + 1) + Math.ceil(9)));
+    for (let i = 0; i < 6; i++) {
+        randoms += Math.floor(Math.random() * 10); // Generates a random digit between 0 and 9
     }
     return randoms;
 };
+
 export const brands = [
     "UGG",
     "VANS",

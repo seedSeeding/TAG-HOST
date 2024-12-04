@@ -55,11 +55,12 @@ export default function LineChartData() {
               dataKey="name" 
               padding={{ left: 30, right: 30  }} 
               tick={{ fontSize: 12 }} 
-              label={{ value: 'Year', position: 'insideBottom', offset: -5, fontSize: 14  }}
+              label={{ value: 'Year', position: 'insideBottom', offset: -5, fontSize: 14 , fontWeight: 'bold' ,fill:"black" }}
             />
             <YAxis 
-              tick={{ fontSize: 10 }} 
-              label={{ value: 'Time to Approval (Days)', angle: -90, fontSize: 14 }}
+            tick={{ fontSize: 12, fontWeight: 'bold' }}
+              
+              label={{ value: 'Time to Approval (Days)', angle: -90, fontSize: 14  , fontWeight: 'bold' ,fill:"black" }}
             />
             <Tooltip
               contentStyle={{

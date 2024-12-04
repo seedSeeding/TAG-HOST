@@ -89,7 +89,13 @@ export class GloveAPI {
         formData.append('category', pattern.category || "");
         formData.append('outer_material', pattern.outer_material || "");
         formData.append('lining_material', pattern.lining_material || "");
-        formData.append('size_to_save', sizeID);
+        if(submitAll){
+            formData.append('size_to_save', 5);
+           
+        }else{
+            formData.append('size_to_save', sizeID);
+        }
+        
     
         // Append size measurements for each size in the glove
         measurementsBySize.forEach((size, index) => {

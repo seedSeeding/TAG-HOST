@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { DataApi } from "../Api/dataService";
 import NotificationBox from "../Notifications/NotificationBox";
 import { NotificationAPi } from "../Api/notificationApi";
-import { formatDATEYYYMMDD, getSizeID, measurementList, partList, safeParse } from "../dataTools";
+import { formatDATEYYYMMDD, getSizeID, getSizeName, measurementList, partList, safeParse } from "../dataTools";
 import { useStateContext } from "../Providers/ContextProvider";
 export default function DataPatternPage() {
     const dataAPI = new DataApi();
@@ -15,7 +15,7 @@ export default function DataPatternPage() {
     const {user} = useStateContext();
     const [selectedData, setSelectedData] = useState([]);
     const [brand, setBrand] = useState("");
-    const [size,setSize] = useState('0');
+    const [size,setSize] = useState('2');
     const [brandList, setBrandList] = useState([]);
     const [category, setCategory] = useState("gloves");
     const [searchValue, setSearchValue] = useState("");
@@ -160,7 +160,6 @@ export default function DataPatternPage() {
 
                                     </div>
                                     <select name="" id="" value={size} onChange={(e) => setSize(e.target.value)} className="selector orange small">
-                                        <option value="0">Size</option>
                                         <option value="1">Small</option>
                                         <option value="2">Medium</option>
                                         <option value="3">Large</option>
@@ -217,7 +216,7 @@ export default function DataPatternPage() {
                                                                     <td>{record.name}</td>
                                                                     <td>{record.outer_material}</td>
                                                                     <td>{record.lining_material}</td>
-                                                                    <td>{item.size_id}</td>
+                                                                    <td>{getSizeName(item.size_id)[0]}</td>
                                                                     <td>{safeParse(item.body).length}</td>
                                                                     <td>{safeParse(item.body).width}</td>
                                                                     <td>{safeParse(item.fringers).length}</td>
@@ -290,7 +289,7 @@ export default function DataPatternPage() {
                                                                     <td>{record.name}</td>
                                                                     <td>{record.outer_material}</td>
                                                                     <td>{record.lining_material}</td>
-                                                                    <td>{item.size_id}</td>
+                                                                    <td>{getSizeName(item.size_id)[0]}</td>
                                                                     <td>{safeParse(item.palm_shell).length}</td>
                                                                     <td>{safeParse(item.palm_shell).width}</td>
                                                                     <td>{safeParse(item.black_shell).length}</td>
@@ -366,7 +365,7 @@ export default function DataPatternPage() {
                                                                     <td>{record.name}</td>
                                                                     <td>{record.outer_material}</td>
                                                                     <td>{record.lining_material}</td>
-                                                                    <td>{item.size_id}</td>
+                                                                    <td>{getSizeName(item.size_id)[0]}</td>
                                                                     <td>{safeParse(item.strap).height}</td>
                                                                     <td>{safeParse(item.strap).width}</td>
                                                                     <td>{safeParse(item.body_crown).height}</td>

@@ -65,8 +65,8 @@ export default function MixBar() {
           >
             <Tooltip/>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" fontSize={9} textAnchor="end" angle={-45} interval={0} label={{ value: "Brands", position: "bottom", offset: 10, fontSize: 12 }} />
-            <YAxis tick={{ fontSize: 12 }} allowDecimals={false} label={{ value: "Number of Issues", angle: -90, position: 'insideLeft', fontSize: 12 }} />
+            <XAxis dataKey="name" fontSize={9} textAnchor="end" angle={-45} interval={0} label={{ value: "Brands", position: "bottom", offset: 10, fontSize: 12 ,fill:"black", fontWeight: 'bold' }} />
+            <YAxis tick={{ fontSize: 12 }} allowDecimals={false} label={{ value: "Number of Issues", angle: -90, position: 'insideLeft', fontSize: 12  , fontWeight: 'bold' ,fill:"black" }} />
             {displayedIssues.map(issue => (
               <Bar key={issue} dataKey={issue} stackId="a" fill={issueColors[issue]} />
             ))}

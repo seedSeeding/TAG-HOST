@@ -98,7 +98,7 @@ export default function PieChart(prop) {
           {data.map((entry, index) => (
             <div key={index} className='pie-legend-row'>
               <div className='pie-legend-box' style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
-              <span style={{color:"#ECB22E"}}>{entry.name}</span>
+              <span style={{color:"#2D3748"}}>{entry.name}</span>
             </div>
           ))}
         </div>
