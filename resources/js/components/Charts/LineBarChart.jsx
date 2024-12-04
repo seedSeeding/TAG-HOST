@@ -21,9 +21,9 @@ const getGloveMeasurement = (partData, getStandarMeasure) => {
         const measure = safeParse(partData[key]);
         let actualName = getName(key);
         const standardMeasure = getStandarMeasure(actualName);
-        if(actualName === "Little Finger"){
+        if (actualName === "Little Finger") {
             actualName = "Pinky Finger";
-        }else if(actualName === "Black Shell"){
+        } else if (actualName === "Black Shell") {
             actualName = "Back Shell";
         }
         glove.push({
@@ -142,7 +142,7 @@ export default function LineBarChart() {
         }
         fetchData();
     }, []);
-    
+
     useEffect(() => {
         const findRecord = async () => {
             try {
@@ -213,19 +213,24 @@ export default function LineBarChart() {
         } else {
             setPatternList([]);
         }
-        
+
     }, [records]);
     useEffect(() => {
         if (Array.isArray(records) && records.length > 0) {
-            const firstcat =  records.filter((a) => a.category === "gloves")
-            setSelectedPattern(firstcat[0].pattern_number);  
+            const firstcat = records.filter((a) => a.category === "gloves")
+            setSelectedPattern(firstcat[0].pattern_number);
         }
-    },[records])
+    }, [records])
 
     useEffect(() => {
         console.log(`${activeCategory} Measurements:`, data);
 
     }, [data]);
+    const getStatusColor = (standard, adjusted) => {
+        if (!standard || !adjusted) return null;
+        const deviation = Math.abs(standard - adjusted) / standard;
+        return deviation <= 0.05 ? '#B2E87D' : '#E87D7D';
+    };
 
     return (
         <div className='line-chart-data-box'>
@@ -234,7 +239,7 @@ export default function LineBarChart() {
                 <div className="chart-selectors rainbow-selectors">
                     {/* <CustomSelector setValue={setBrand} value={brand} values={brandList} /> */}
                     {/* <CustomSelector setValue={setSize} value={size} values={sizeList} /> */}
-                  
+
                     <SearchPattern setValue={setSelectedPattern} value={selectedPattern} patterns={patternList} />
                     <div className='title orange small rounded-label orange'>
                         {capitalizeWords(String(activeCategory))}
@@ -246,17 +251,17 @@ export default function LineBarChart() {
                     </select>
                 </div>
             </div>
-           
+
 
             <div className='linechart line-and-bar' >
-                <ResponsiveContainer width="100%" height={280}>
+                <ResponsiveContainer width="80%" height={280}>
 
                     <ComposedChart
                         data={data}
                         margin={{
                             top: 5,
                             right: 0,
-                            left: 0,
+                            left: 20,
                             bottom: 20,
                         }}
                         barSize={10}
@@ -269,9 +274,10 @@ export default function LineBarChart() {
                             textAnchor="end"
                             angle={-45}
                             interval={0}
+                            label={{ value: 'Parts', position: 'insideBottom', offset: -5, fontSize: 14, color: "#ECB22E" }}
                         />
 
-                        <YAxis fontSize={9} textAnchor="middle" />
+                        <YAxis fontSize={9} textAnchor="middle" label={{ value: 'Measurements(inches)', angle: -90, fontSize: 14, color: "#ECB22E" }} />
 
 
                         <Tooltip
@@ -294,23 +300,30 @@ export default function LineBarChart() {
                             }}
                         />
                         {
-                            (activeCategory == "gloves" || activeCategory === "scarves") && (
+                            (activeCategory === "gloves" || activeCategory === "scarves") && (
                                 <>
                                     <Bar dataKey="standardLength" fill="#2D3748" />
                                     <Bar dataKey="standardWidth" fill="#ECB22E" />
-                                    <Line type="linear"
-                                        dataKey="adjustedLength"
-                                        stroke="red"
-                                        strokeWidth={2}
+                                    <Line type="linear" dataKey="adjustedLength" stroke="#8FAADC" strokeWidth={2} dot={(props) => {
+                                        console.log(props);
+                                        const { payload } = props;
+                                        const color = getStatusColor(payload.standardLength, payload.adjustedLength);
+                                        return <circle {...props} fill={color} />;
+                                    }}
                                     />
-                                    <Line type="linear"
-                                        dataKey="adjustedWidth"
-                                        stroke="#707275"
-                                        strokeWidth={2}
-                                    />
+                                    <Line type="linear" dataKey="adjustedWidth" stroke="#707275" strokeWidth={2} dot={(props) => {
+                                        console.log(props);
+                                        const { payload } = props;
+                                        const color = getStatusColor(payload.standardWidth, payload.adjustedWidth);
+                                        return <circle {...props} fill={color} />;
+                                    }} />
+
+
                                 </>
                             )
                         }
+
+
                         {
                             activeCategory === "hats" && (
                                 <>
@@ -320,13 +333,23 @@ export default function LineBarChart() {
                                         type="linear"
                                         dataKey="adjustedCircumference"
                                         stroke="#707275"
-                                        strokeWidth={2}
+                                        strokeWidth={2} dot={(props) => {
+                                            console.log(props);
+                                            const { payload } = props;
+                                            const color = getStatusColor(payload.StandardCircumference, payload.adjustedCircumference);
+                                            return <circle {...props} fill={color} />;
+                                        }}
                                     />
                                     <Line
                                         type="linear"
                                         dataKey="adjustedDiameter"
                                         stroke="black"
-                                        strokeWidth={2}
+                                        strokeWidth={2} dot={(props) => {
+                                            console.log(props);
+                                            const { payload } = props;
+                                            const color = getStatusColor(payload.StandardDiameter, payload.adjustedDiameter);
+                                            return <circle {...props} fill={color} />;
+                                        }}
                                     />
                                     <Bar dataKey="standardLength" fill="#2D3748" />
                                     <Bar dataKey="StandardHeight" fill="black" />
@@ -335,19 +358,34 @@ export default function LineBarChart() {
                                         type="linear"
                                         dataKey="adjustedLength"
                                         stroke="red"
-                                        strokeWidth={2}
+                                        strokeWidth={2} dot={(props) => {
+                                            console.log(props);
+                                            const { payload } = props;
+                                            const color = getStatusColor(payload.standardLength, payload.adjustedLength);
+                                            return <circle {...props} fill={color} />;
+                                        }}
                                     />
                                     <Line
                                         type="linear"
                                         dataKey="adjustedHeight"
                                         stroke="#707275"
-                                        strokeWidth={2}
+                                        strokeWidth={2} dot={(props) => {
+                                            console.log(props);
+                                            const { payload } = props;
+                                            const color = getStatusColor(payload.StandardHeight, payload.adjustedHeight);
+                                            return <circle {...props} fill={color} />;
+                                        }}
                                     />
                                     <Line
                                         type="linear"
                                         dataKey="adjustedWidth"
                                         stroke="#B0E0E6"
-                                        strokeWidth={2}
+                                        strokeWidth={2} dot={(props) => {
+                                            console.log(props);
+                                            const { payload } = props;
+                                            const color = getStatusColor(payload.standardWidth, payload.adjustedWidth);
+                                            return <circle {...props} fill={color} />;
+                                        }}
                                     />
                                 </>
                             )
@@ -371,8 +409,77 @@ export default function LineBarChart() {
                     </ComposedChart>
 
                 </ResponsiveContainer>
+                <div className='adjusment-legends'>
+                    <div className='status-legend adjusment-legend-row'>
+                        <span>Status</span>
+                        <div className='status-legend-row'><div className='elipsis green'></div>On Target</div>
+                        <div className='status-legend-row'><div className='elipsis red'></div>On Target</div>
+                    </div>
 
+                    <div className='measure-legend adjustment-legend-row'>
+                        <span>Measurement</span>
+
+
+                        {
+                            activeCategory === "scarves" ||   activeCategory === "gloves" && (
+                                <>
+                                    <div className='measure-legend-row'>
+                                        <div className='standard-rec blue'></div>
+                                        Standard Length
+                                    </div>
+                                    <div className='measure-legend-row'>
+                                        <div className='standard-rec yellow'></div>
+                                        Standard Width
+                                    </div>
+
+                                    <div className='measure-legend-row'>
+                                        <div className='final-rec length'></div>
+                                        Final Length
+                                    </div>
+                                    <div className='measure-legend-row'>
+                                        <div className='final-rec width'></div>
+                                        Final Width
+                                    </div>
+                                </>
+                            )
+                        }
+                        {
+                            activeCategory === "hats" && (
+                                <>
+                                    <div className='measure-legend-row'>
+                                        <div className='standard-rec cir'></div>
+                                        Standard Height
+                                    </div>
+                                    <div className='measure-legend-row'>
+                                        <div className='standard-rec dia'></div>
+                                        Standard Diameter
+                                    </div>
+                                    <div className='measure-legend-row'>
+                                        <div className='standard-rec hei'></div>
+                                        Standard Circumference
+                                    </div>
+
+                                    <div className='measure-legend-row'>
+                                        <div className='final-rec height'></div>
+                                        Final Height
+                                    </div>
+                                    <div className='measure-legend-row'>
+                                        <div className='final-rec diameter'></div>
+                                        Final Diameter
+                                    </div>
+                                    <div className='measure-legend-row'>
+                                        <div className='final-rec circumference'></div>
+                                        Final Circumference
+                                    </div>
+                                </>
+                            )
+                        }
+                    </div>
+
+                </div>
             </div>
+
+
 
         </div >
     );

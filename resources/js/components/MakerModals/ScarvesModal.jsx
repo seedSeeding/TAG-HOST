@@ -6,7 +6,10 @@ import {
     updateByMaterial_LW,
     check_HW,
     check_LW,
-    inputChangeColor
+    inputChangeColor,
+    generateRandomPN,
+    brands,
+
 } from "../dataTools";
 import { ScarfAPI } from "../Api/ScarfApi";
 import NotifCard from "../Notifications/NotifCard";
@@ -16,6 +19,7 @@ import { useStateContext } from "../Providers/ContextProvider";
 
 export default function ScarvesModal(props) {
     const { user, setLoad } = useStateContext();
+
     const { setActiveCreateModal, activeCreateModal, setCreateOpenModal } = props;
     const [size, setSize] = useState("Medium");
     const [outerMaterialAdj, setOuterMaterialAdj] = useState(0);
@@ -24,7 +28,11 @@ export default function ScarvesModal(props) {
     const [error, setError] = useState('');
     const [success, setSucess] = useState('');
 
-    const [patternNumber, setPatternNumber] = useState('');
+       
+    const [isSubmmitAll, setIsSubmitAll] = useState(false);
+    const [openSubmitALlModal, setOpenSubmitAllModal] = useState(false);
+
+    const [patternNumber, setPatternNumber] = useState(generateRandomPN());
     const [name, setName] = useState('');
     const [category, setCategory] = useState('scarves');
     const [brand, setBrand] = useState('');
@@ -41,7 +49,12 @@ export default function ScarvesModal(props) {
 
     const scarfApi = new ScarfAPI();
 
-    const handleSave = (submit) => {
+    const handleSave = (submit,submitAll) => {
+        if (submit && submitAll && isSubmmitAll === false) {
+            setOpenSubmitAllModal(true);
+            return;
+        }
+        setOpenSubmitAllModal(false);
         const validateFields = () => {
 
             if (!patternNumber) return "Pattern number is required.";
@@ -95,7 +108,7 @@ export default function ScarvesModal(props) {
         const create = async () => {
             try {
                 const response = await scarfApi.createScarf(
-                    pattern, partsToSave, size, submit, image
+                    pattern, partsToSave, size, submit, image,submitAll
                 );
                 
                     setSucess(response);
@@ -108,6 +121,7 @@ export default function ScarvesModal(props) {
         };
 
         create();
+        setIsSubmitAll(false);
     };
 
     const handleSizeChange = (e) => {
@@ -166,12 +180,47 @@ export default function ScarvesModal(props) {
     //     setFringers((prev) => (check_LW(prev)));
     //     setEdges((prev) => (check_LW(prev)));
     // }, [body, fringers, edges]);
-
+    useEffect(() => {
+        if (isSubmmitAll) {
+            handleSave(true, true);
+        }
+    }, [isSubmmitAll]);
     return (
         <>
             <div className="maker-modal-overlay">
                 {success && (<NotifCard type={"s"} message={success} setMessage={setSucess} />)}
                 {error && (<NotifCard type={"e"} message={error} setMessage={setError} />)}
+                {
+                    openSubmitALlModal && (
+                        <>
+                            <div className="submit-all-modal">
+                                <div className="submit-all-modal-box">
+                                    <div className="modal-content">
+                                        <p>Are you sure you want to submit all size records?</p>
+                                    </div>
+                                    <div className="modal-actions">
+                                        <button
+                                            onClick={() => {
+                                                setIsSubmitAll(false);
+                                                setOpenSubmitAllModal(false);
+                                            }}
+                                            className="modal-button cancel"
+                                        >
+                                            No
+                                        </button>
+                                        <button
+                                            onClick={() => setIsSubmitAll(true)}
+                                            className="modal-button confirm"
+                                        >
+                                            Yes
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </>
+                    )
+                }
                 <div className="maker-create-modal">
                     <div className="modal-pattern-content">
                         <div className="modal-pattern-image" onClick={handleSelectImage} style={{ cursor: 'pointer' }}>
@@ -201,7 +250,11 @@ export default function ScarvesModal(props) {
                                 <span>Category</span>
                             </div>
                             <div className="modal-control-box">
-                                <input type="text" placeholder="Enter Brand" value={brand} onChange={(e) => setBrand(e.target.value)} />
+                                <select name="" id="" onChange={(e) => setBrand(e.target.value)}>
+                                    {brands.map((value, index) => (
+                                        <option value={value} key={index}>{value}</option>
+                                    ))}
+                                </select>
                                 <span>Brand</span>
                             </div>
                             <div className="modal-control-box">
@@ -249,8 +302,9 @@ export default function ScarvesModal(props) {
                             </button>
                         </div>
                         <div className="modal-buttons">
-                            <button onClick={() => handleSave(false)}>Save Record</button>
-                            <button onClick={() => handleSave(true)}>Submit Record</button>
+                            <button onClick={() => handleSave(false,false)}>Save Record</button>
+                            <button onClick={() => handleSave(true,false)}>Submit Record</button>
+                            <button onClick={() =>  handleSave(true,true)}>Submit All Size</button>
                             <div>
                                 <select value={size} onChange={handleSizeChange}>
                                     <option value="Small">Small</option>

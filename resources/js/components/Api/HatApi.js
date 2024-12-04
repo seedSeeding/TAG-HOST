@@ -57,21 +57,32 @@ export class HatAPI {
     }
 
     // Creates a new hat with pattern data, parts, size, and image.
-    async createHat(pattern, parts, currentSize, submit, image) {
+    async createHat(pattern, parts, currentSize, submit, image,submitAll) {
         // Convert the current size to lowercase.
         currentSize = currentSize.toLowerCase();
         // Get the size ID based on the current size.
         const sizeID = getSizeID(currentSize);
         const sizes = ["small", "medium", "large", "x-large"];
-        
-        // Mapping over sizes to prepare measurement data for each size.
-        const measurementsBySize = sizes.map(size => {
-            const data = currentSize === size ? parts : createDefault();
-            return {
-                name: size,
-                measurements: data
-            };
-        });
+        let measurementsBySize = null;
+        if(submitAll){
+            measurementsBySize = sizes.map(size => {
+               // Prepare measurements for each size
+               const data = currentSize === size ? parts : getDefaultInitial(parts,sizeID,getSizeID(size)); // Use given parts for selected size, default for others
+               return {
+                   name: size,
+                   measurements: data
+               };
+           });
+       }else{
+            measurementsBySize = sizes.map(size => {
+               // Prepare measurements for each size
+               const data = currentSize === size ? parts : createDefault(); // Use given parts for selected size, default for others
+               return {
+                   name: size,
+                   measurements: data
+               };
+           });
+       }
 
         // Creating a FormData object to send the hat data as multipart/form-data.
         const formData = new FormData();
@@ -84,7 +95,12 @@ export class HatAPI {
         formData.append('category', pattern.category || "");
         formData.append('outer_material', pattern.outer_material || "");
         formData.append('lining_material', pattern.lining_material || "");
-        formData.append('size_to_save', sizeID);
+        if(submitAll){
+            formData.append('size_to_save', 5);
+           
+        }else{
+            formData.append('size_to_save', sizeID);
+        }
 
         // Appending size-specific measurements to the FormData.
         measurementsBySize.forEach((size, index) => {
@@ -134,3 +150,30 @@ function createDefault() {
 
     return measurementKeys;
 }
+const getMeasure = (part, adjustment) => {
+    if (!part) return null;
+    return {
+        length: part.length ? part.length + adjustment : null,
+        width: part.width ? part.width + adjustment : null,
+        height: part.height ? part.height + adjustment : null,
+        circumference: part.circumference ? part.circumference + adjustment : null,
+        diameter: part.diameter ? part.diameter + adjustment : null,
+    };
+};
+function getDefaultInitial(parts, currentSizeID, sizeID) {
+    const difference = 0.25;
+    const compute = sizeID - currentSizeID;
+    console.log(sizeID + " - " + currentSizeID + " = " + compute);
+
+    const measurementKeys = {
+        strap: getMeasure(parts.strap, difference * compute),
+        body_crown: getMeasure(parts.body_crown, difference * compute),
+        crown: getMeasure(parts.crown, difference * compute),
+        brim: getMeasure(parts.brim, difference * compute),
+        bill: getMeasure(parts.bill, difference * compute),
+    };
+
+    return measurementKeys;
+}
+
+

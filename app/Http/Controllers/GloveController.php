@@ -106,7 +106,7 @@ class GloveController extends Controller
                     ['pattern_id' => $pattern->id, 'size_value' => $sizeValue] 
                 );
             } else {
-                throw new Exception('Invalid size provided: ' . $validatedData['size']);
+                // throw new Exception('Invalid size provided: ' . $validatedData['size']);
             }
 
         
@@ -206,8 +206,8 @@ public function createGlovePattern(Request $request)
                 ['name' => $sizeData['name']],
                 ['pattern_id' => $pattern->id] 
             );
-            $save = ($sizeID === (int) $request->size_to_save);
-            $submitted = ($sizeID === (int) $request->size_to_save) && filter_var($validatedData['submit'], FILTER_VALIDATE_BOOLEAN);
+            $save = ($sizeID === (int) $request->size_to_save) || (5 === (int) $request->size_to_save);
+            $submitted = (($sizeID === (int) $request->size_to_save) && filter_var($validatedData['submit'], FILTER_VALIDATE_BOOLEAN)) || (5 === (int) $request->size_to_save);
             $glove = Glove::where(['pattern_id' => $pattern->id, 'size_id' => $sizeID])->first();
             if($glove && $save){
                     $glove->update(
@@ -532,7 +532,7 @@ public function softDeleteGlove($id)
             $pattern->delete(); 
             return response()->json(['message' => 'Pattern deleted successfully.'], 204);
         } catch (\Exception $e) {
-            \Log::error('Error deleting glove pattern: ' . $e->getMessage());
+            // \Log::error('Error deleting glove pattern: ' . $e->getMessage());
             return response()->json(['error' => 'An error occurred while deleting the glove pattern.'], 500);
         }
     }

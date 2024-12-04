@@ -22,8 +22,8 @@ export default function MakerViewStatus(prop) {
     const [large, setLarge] = useState();
     const [xLarge, setXLarge] = useState();
 
-
-
+    //console.log("data:::", data)
+  //  alert(data.name)
     useEffect(() => {
         try {
             const categoryData = data?.[data.category];

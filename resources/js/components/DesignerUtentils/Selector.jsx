@@ -16,7 +16,7 @@ export default function Selector(props) {
 
     return (
         <>
-            <div className={`selector-div ${auto && 'max-h-[500px] min-h-[500px] overflow-auto relative bg-red-500'}`}>
+            <div className={` selector-div ${auto && 'max-h-[500px] min-h-[500px] overflow-auto relative bg-red-500'}`}>
             <div className="selector-header">
                 <span className="selector-title">{title}</span>
                {fixedOpen !== true && (

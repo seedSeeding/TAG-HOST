@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { materialList, updateLengthWidth, getMaterialAdjusment, updateByMaterial_LW, check_LW, getSizeID, inputChangeColor } from "../dataTools";
+import { materialList, updateLengthWidth, getMaterialAdjusment, updateByMaterial_LW, check_LW, getSizeID, inputChangeColor, generateRandomPN, brands } from "../dataTools";
 import { GloveAPI } from "../Api/GLoveApi";
 import NotifCard from "../Notifications/NotifCard";
 import PartModal from "./PartModal";
 import { getStandardMeasureLarge, getStandardMeasureMedium, getStandardMeasurements_LW, getStandardMeasureSmall, getStandardMeasureXLarge } from "../StandardMeasurements/StandardMeasures";
 import { useStateContext } from "../Providers/ContextProvider";
 export default function GlovesModal(props) {
-    const {user,setLoad}  = useStateContext();
+    const { user, setLoad } = useStateContext();
     const { setActiveCreateModal, activeCreateModal, setCreateOpenModal } = props;
     const [error, setError] = useState('');
     const [success, setSucess] = useState('');
@@ -14,8 +14,11 @@ export default function GlovesModal(props) {
     const [outerMaterialAdj, setOuterMaterialAdj] = useState(0);
     const [liningMaterialAdj, setLiningMaterialAdj] = useState(0);
     const [materialAdjusment, setMaterialAdjusment] = useState(0);
+    
+    const [isSubmmitAll, setIsSubmitAll] = useState(false);
+    const [openSubmitALlModal, setOpenSubmitAllModal] = useState(false);
 
-    const [patternNumber, setPatternNumber] = useState('');
+    const [patternNumber, setPatternNumber] = useState(generateRandomPN());
     const [name, setName] = useState('');
     const [category, setCategory] = useState('gloves');
     const [brand, setBrand] = useState('');
@@ -26,21 +29,25 @@ export default function GlovesModal(props) {
     const fileInputRef = useRef(null);
     const [imageView, setImageView] = useState('');
 
-    const [palmShell, setPalmShell] = useState(getStandardMeasurements_LW(size,"Palm Shell"));
-    const [backShell, setBackShell] = useState(getStandardMeasurements_LW(size,"Black Shell"));
-    const [palmThumb, setPalmThumb] = useState(getStandardMeasurements_LW(size,"Palm Thumb"));
-    const [backThumb, setBackThumb] = useState(getStandardMeasurements_LW(size,"Back Thumb"));
-    const [indexFinger, setIndexFinger] = useState(getStandardMeasurements_LW(size,"Index Finger"));
-    const [middleFinger, setMiddleFinger] = useState(getStandardMeasurements_LW(size,"Middle Finger"));
-    const [ringFinger, setRingFinger] = useState(getStandardMeasurements_LW(size,"Ring Finger"));
-    const [littleFinger, setLittleFinger] = useState(getStandardMeasurements_LW(size,"Little Finger"));
-    const [wrist, setWrist] = useState(getStandardMeasurements_LW(size,"Wrist"));
+    const [palmShell, setPalmShell] = useState(getStandardMeasurements_LW(size, "Palm Shell"));
+    const [backShell, setBackShell] = useState(getStandardMeasurements_LW(size, "Black Shell"));
+    const [palmThumb, setPalmThumb] = useState(getStandardMeasurements_LW(size, "Palm Thumb"));
+    const [backThumb, setBackThumb] = useState(getStandardMeasurements_LW(size, "Back Thumb"));
+    const [indexFinger, setIndexFinger] = useState(getStandardMeasurements_LW(size, "Index Finger"));
+    const [middleFinger, setMiddleFinger] = useState(getStandardMeasurements_LW(size, "Middle Finger"));
+    const [ringFinger, setRingFinger] = useState(getStandardMeasurements_LW(size, "Ring Finger"));
+    const [littleFinger, setLittleFinger] = useState(getStandardMeasurements_LW(size, "Little Finger"));
+    const [wrist, setWrist] = useState(getStandardMeasurements_LW(size, "Wrist"));
 
 
     const gloveApi = new GloveAPI();
 
-    const handleSave = (submit) => {
-
+    const handleSave = (submit, submitAll) => {
+        if (submit && submitAll && isSubmmitAll === false) {
+            setOpenSubmitAllModal(true);
+            return;
+        }
+        setOpenSubmitAllModal(false);
         const validateFields = () => {
             if (!patternNumber) return "Pattern number is required.";
             if (!name) return "Name is required.";
@@ -88,7 +95,7 @@ export default function GlovesModal(props) {
             outer_material: outerMaterial,
             lining_material: liningMaterial,
         };
-       // alert(backShell.length);
+        // alert(backShell.length);
         const partsToSave = {
             palm_shell: palmShell,
             black_shell: backShell,
@@ -103,19 +110,20 @@ export default function GlovesModal(props) {
 
         const create = async () => {
             try {
-                const response = await gloveApi.createGlove(pattern, partsToSave, size, submit, image);
-                  
-                        setSucess(response);
-                        setLoad();
-               
-                    
-                
+                const response = await gloveApi.createGlove(pattern, partsToSave, size, submit, image, submitAll);
+
+                setSucess(response);
+                setLoad();
+
+
+
             } catch (error) {
-                setError( error.message);
+                setError(error.message);
             }
         };
 
         create();
+        setIsSubmitAll(false);
     };
 
 
@@ -191,12 +199,47 @@ export default function GlovesModal(props) {
     // }, [palmShell, backShell, palmThumb, backThumb, indexFinger, middleFinger, ringFinger, littleFinger, wrist]);
 
 
-   
+    useEffect(() => {
+        if (isSubmmitAll) {
+            handleSave(true, true);
+        }
+    }, [isSubmmitAll]);
     return (
         <>
             <div className="maker-modal-overlay">
                 {success && (<NotifCard type={"s"} message={success} setMessage={setSucess} />)}
                 {error && (<NotifCard type={"e"} message={error} setMessage={setError} />)}
+                {
+                    openSubmitALlModal && (
+                        <>
+                            <div className="submit-all-modal">
+                                <div className="submit-all-modal-box">
+                                    <div className="modal-content">
+                                        <p>Are you sure you want to submit all size records?</p>
+                                    </div>
+                                    <div className="modal-actions">
+                                        <button
+                                            onClick={() => {
+                                                setIsSubmitAll(false);
+                                                setOpenSubmitAllModal(false);
+                                            }}
+                                            className="modal-button cancel"
+                                        >
+                                            No
+                                        </button>
+                                        <button
+                                            onClick={() => setIsSubmitAll(true)}
+                                            className="modal-button confirm"
+                                        >
+                                            Yes
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </>
+                    )
+                }
                 <div className="maker-create-modal">
                     <div className="modal-pattern-content">
                         <div className="modal-pattern-image" onClick={handleSelectImage} style={{ cursor: 'pointer' }}>
@@ -226,13 +269,20 @@ export default function GlovesModal(props) {
                                 <span>Category</span>
                             </div>
                             <div className="modal-control-box">
-                                <input type="text" placeholder="Enter Brand" value={brand} onChange={(e) => setBrand(e.target.value)} />
+                                <select name="" id="" onChange={(e) => setBrand(e.target.value)}>
+                                    {brands.map((value, index) => (
+                                        <option value={value} key={index}>{value}</option>
+                                    ))}
+                                </select>
                                 <span>Brand</span>
                             </div>
                             <div className="modal-control-box">
                                 <input type="text" placeholder="Enter Design Name" value={name} onChange={(e) => setName(e.target.value)} />
                                 <span>Name</span>
                             </div>
+
+
+
                             <div className="modal-control-box">
                                 <select name="" id="" onChange={handleOuterChange}>
                                     <option value="Outer Material">Outer Material</option>
@@ -277,8 +327,9 @@ export default function GlovesModal(props) {
                             </button>
                         </div>
                         <div className="modal-buttons">
-                            <button onClick={() => handleSave(false)}>Save Record</button>
-                            <button onClick={() => handleSave(true)}>Submit Record</button>
+                            <button onClick={() => handleSave(false, false)}>Save Record</button>
+                            <button onClick={() => handleSave(true, false)}>Submit Record</button>
+                            <button onClick={() => handleSave(true, true)}>Submit All Size</button>
                             <div>
                                 <select value={size} onChange={handleSizeChange}>
                                     <option value="Small">Small</option>

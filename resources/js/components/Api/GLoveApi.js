@@ -16,6 +16,7 @@ export class GloveAPI {
             size_to_save: sizeID,
             submit: submit,
             glove_id,
+
             palm_shell: parts.palm_shell,
             black_shell: parts.black_shell,
             palm_thumb: parts.palm_thumb,
@@ -50,20 +51,33 @@ export class GloveAPI {
     }
 
     // Function to create a new glove pattern
-    async createGlove(pattern, parts, currentSize, submit, image) {
+    async createGlove(pattern, parts, currentSize, submit, image,submitAll) {
         currentSize = currentSize.toLowerCase(); // Convert the size to lowercase
         const sizeID = getSizeID(currentSize); // Get the size ID based on the current size
       //  alert(sizeID + `${submit}`);
         const sizes = ["small", "medium", "large", "x-large"]; // Define possible glove sizes
         
-        // Prepare measurements for each size
-        const measurementsBySize = sizes.map(size => {
-            const data = currentSize === size ? parts : createDefault(); // Use default data for other sizes
-            return {
-                name: size,
-                measurements: data
-            };
-        });
+        let measurementsBySize = null;
+        // alert(submitAll)
+        if(submitAll){
+             measurementsBySize = sizes.map(size => {
+                // Prepare measurements for each size
+                const data = currentSize === size ? parts : getDefaultInitial(parts,sizeID,getSizeID(size)); // Use given parts for selected size, default for others
+                return {
+                    name: size,
+                    measurements: data
+                };
+            });
+        }else{
+             measurementsBySize = sizes.map(size => {
+                // Prepare measurements for each size
+                const data = currentSize === size ? parts : createDefault(); // Use given parts for selected size, default for others
+                return {
+                    name: size,
+                    measurements: data
+                };
+            });
+        }
     
         const formData = new FormData(); // Create FormData to send data with file
         formData.append('submit', submit ? 'true' : 'false');
@@ -123,3 +137,30 @@ Below are some commented-out helper functions that were possibly considered for 
 
 These are not in use in the current code but may be useful for future changes or functionality.
 */
+
+function getMeasure(part, com) {
+    return {
+        length: (parseFloat(part.length) + com).toFixed(2),
+        width: (parseFloat(part.width) + com).toFixed(2),
+    };
+}
+
+function getDefaultInitial(parts, currentSizeID, sizeID) {
+    const difference = 0.25;
+    const compute = sizeID - currentSizeID;
+    console.log(sizeID + " - " + currentSizeID + " = " + compute);
+
+    const measurementKeys = {
+        palm_shell: getMeasure(parts.palm_shell, difference * compute),
+        black_shell: getMeasure(parts.black_shell, difference * compute),
+        palm_thumb: getMeasure(parts.palm_thumb, difference * compute),
+        back_thumb: getMeasure(parts.back_thumb, difference * compute),
+        index_finger: getMeasure(parts.index_finger, difference * compute),
+        middle_finger: getMeasure(parts.middle_finger, difference * compute),
+        ring_finger: getMeasure(parts.ring_finger, difference * compute),
+        little_finger: getMeasure(parts.little_finger, difference * compute),
+        wrist: getMeasure(parts.wrist, difference * compute),
+    };
+
+    return measurementKeys;
+}

@@ -1,10 +1,35 @@
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStateContext } from "../Providers/ContextProvider";
-
+import { PatternApi } from '../Api/PatternService';
+import MakerViewStatus from "../MakerModals/MakerViewStatus";
 export default function MakerNotificationBox({ notifications }) {
     //MakerNotificationBoxconsole.log("notifications:::", notifications);
+//    console.log(notifications)
+    
+    const patternApi = new PatternApi();
+    const [data,setData] = useState();
+    const [modalData, setModalData] = useState();
+    const [openModal, setOpenModal] = useState(false);
+    const openViewStatus = (pattern_id) => {
+        const getUserData = async (pattern_id) => {
+          
+            try {
+                const res = await patternApi.getPatternById(pattern_id);
+                setData(res);
+                if(res){
+                    setModalData(res[0]);
+                    setOpenModal(true);
+                    
+                }
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+        getUserData(pattern_id);
+        // alert(pattern_id)
+    }
    
     return (
         <div className="bg-[#373839] p-2 shadow-md rounded-lg  maker-notification">
@@ -17,6 +42,7 @@ export default function MakerNotificationBox({ notifications }) {
                     <div
                         key={index}
                         className={`flex notification-row p-1 items-center space-x-1 mb-3 border rounded-xl ${notification.is_read ? "mark-as-read" : "mark-as-not-read"}`}
+                        onClick={() => openViewStatus(notification['pattern'].id)}
                     >
                         <img
                             src={`/storage/${notification['pattern'].image}`}
@@ -33,6 +59,7 @@ export default function MakerNotificationBox({ notifications }) {
                     </div>
                 ))}
             </div>
+            {openModal && (<MakerViewStatus onCLose={setOpenModal} data={modalData} />)}
         </div>
     );
 }

@@ -7,6 +7,7 @@ use App\Models\Size;
 use App\Models\Notification;
 use App\Models\MeasurementHistory;
 use App\Models\Scarf;
+use App\Http\Controllers\Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
@@ -100,7 +101,7 @@ class ScarfController extends Controller
         try {
             $validator =  Validator::make($request->all(), [
                 'maker_id' => 'required|exists:users,id',
-                'pattern_number' => 'required|string|unique:patterns,pattern_number',
+                'pattern_number' => 'required|string',
                 'name' => 'required|string',
                 'category' => 'required|string',
                 'brand' => 'required|string',
@@ -136,60 +137,102 @@ class ScarfController extends Controller
 
             $imagePath = $request->file('image')->store('images', 'public');
             $validatedData['image'] = $imagePath;
-
-            $pattern = Pattern::create([
-                'maker_id' => $validatedData['maker_id'],
-                'pattern_number' => $validatedData['pattern_number'],
-                'name' => $validatedData['name'],
-                'brand' => $validatedData['brand'],
-                'category' => $validatedData['category'],
-                'outer_material' => $validatedData['outer_material'],
-                'lining_material' => $validatedData['lining_material'],
-                'image' => $validatedData['image'],
-            ]);
+            $pattern = Pattern::where('pattern_number', $validatedData['pattern_number'])->first();
+            if(!$pattern){
+                $pattern = Pattern::create([
+                    'maker_id' => $validatedData['maker_id'],
+                    'pattern_number' => $validatedData['pattern_number'],
+                    'name' => $validatedData['name'],
+                    'brand' => $validatedData['brand'],
+                    'category' => $validatedData['category'],
+                    'outer_material' => $validatedData['outer_material'],
+                    'lining_material' => $validatedData['lining_material'],
+                    'image' => $validatedData['image'],
+                ]);
+            }
+            
 
             $sizeID = 1;
             foreach ($validatedData['sizes'] as $sizeData) {
               
-                $size = Size::firstOrCreate(['name' => $sizeData['name']]);
-                $save = ($sizeID === (int) $request->size_to_save);
-                $submitted = ($sizeID === (int) $request->size_to_save) && filter_var($validatedData['submit'], FILTER_VALIDATE_BOOLEAN);
-
-               $scarf =  Scarf::create([
-                    'pattern_id' => $pattern->id,
-                    'size_id' => $size->id,
-                    'body' => json_encode($sizeData['measurements']['body']),
-                    'fringers' => json_encode($sizeData['measurements']['fringers']),
-                    'edges' => json_encode($sizeData['measurements']['edges']),
-                    'approval_state' => 'pending', 
-                    'saved' => $save,
-                    'submitted' => $submitted,
-                    'submit_date' => $submitted ? now() : null,
-                ]);
-                if($save){
-                    MeasurementHistory::create([
-                        'category' => "hats",
-                        'size_id' => $size->id,
+                $size = Size::updateOrCreate(
+                    ['name' => $sizeData['name']],
+                    ['pattern_id' => $pattern->id] 
+                );
+                $save = ($sizeID === (int) $request->size_to_save) || (5 === (int) $request->size_to_save);
+                $submitted = (($sizeID === (int) $request->size_to_save) && filter_var($validatedData['submit'], FILTER_VALIDATE_BOOLEAN)) || (5 === (int) $request->size_to_save);
+                $scarf = Scarf::where(['pattern_id' => $pattern->id, 'size_id' => $sizeID])->first();
+                if($scarf && $save){
+                    $scarf->update(
+                        [
+                            'pattern_id' => $pattern->id,
+                            'size_id' => $size->id,
+                            'body' => json_encode($sizeData['measurements']['body']),
+                            'fringers' => json_encode($sizeData['measurements']['fringers']),
+                            'edges' => json_encode($sizeData['measurements']['edges']),
+                            'approval_state' => 'pending', 
+                            'saved' => $save,
+                            'submitted' => $submitted,
+                            'submit_date' => $submitted ? now() : null,
+                        ]
+                    );
+                    if($save){
+                        MeasurementHistory::create([
+                            'category' => "hats",
+                            'size_id' => $size->id,
+                            'pattern_id' => $pattern->id,
+                            'data' => json_encode($scarf), 
+                            'updated_at' => now(),                    
+                        ]);
+                       }
+    
+                    if($submitted){
+                        $pattern = Pattern::find($scarf->pattern_id);
+                        Notification::create([
+                            'user_id' => $pattern->maker_id,
+                            'message' => "Pattern: {$pattern->pattern_number} has been submitted",
+                            'size' => $scarf->size_id === 1 ? 'Small' : ($scarf->size_id === 2 ? 'Medium' : ($scarf->size_id === 3 ? 'Large' : 'X-Large')),
+                            'is_read' => false,
+                        ]);
+                    }
+                }else if(!$scarf){
+                    $scarf =  Scarf::create([
                         'pattern_id' => $pattern->id,
-                        'data' => json_encode($scarf), 
-                        'updated_at' => now(),                    
+                        'size_id' => $size->id,
+                        'body' => json_encode($sizeData['measurements']['body']),
+                        'fringers' => json_encode($sizeData['measurements']['fringers']),
+                        'edges' => json_encode($sizeData['measurements']['edges']),
+                        'approval_state' => 'pending', 
+                        'saved' => $save,
+                        'submitted' => $submitted,
+                        'submit_date' => $submitted ? now() : null,
                     ]);
-                   }
-
-                if($submitted){
-                    $pattern = Pattern::find($scarf->pattern_id);
-                    Notification::create([
-                        'user_id' => $pattern->maker_id,
-                        'message' => "Pattern: {$pattern->pattern_number} has been submitted",
-                        'size' => $scarf->size_id === 1 ? 'Small' : ($scarf->size_id === 2 ? 'Medium' : ($scarf->size_id === 3 ? 'Large' : 'X-Large')),
-                        'is_read' => false,
-                    ]);
+                    if($save){
+                        MeasurementHistory::create([
+                            'category' => "hats",
+                            'size_id' => $size->id,
+                            'pattern_id' => $pattern->id,
+                            'data' => json_encode($scarf), 
+                            'updated_at' => now(),                    
+                        ]);
+                       }
+    
+                    if($submitted){
+                        $pattern = Pattern::find($scarf->pattern_id);
+                        Notification::create([
+                            'user_id' => $pattern->maker_id,
+                            'message' => "Pattern: {$pattern->pattern_number} has been submitted",
+                            'size' => $scarf->size_id === 1 ? 'Small' : ($scarf->size_id === 2 ? 'Medium' : ($scarf->size_id === 3 ? 'Large' : 'X-Large')),
+                            'is_read' => false,
+                        ]);
+                    }
                 }
+                
                 $sizeID++;
             }
 
             return response()->json([
-                'message' => 'Scarf pattern created successfully.',
+                'message' => 'Scarf pattern created successfully',
             ], 201);
             
         } catch (ValidationException $e) {
@@ -311,7 +354,7 @@ class ScarfController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['error' => $e->errors()], 422);
         } catch (\Exception $e) {
-            \Log::error('Error updating scarf pattern: ' . $e->getMessage());
+            // \Log::error('Error updating scarf pattern: ' . $e->getMessage());
             return response()->json(['error' => 'An error occurred while updating the scarf pattern.'], 500);
         }
     }

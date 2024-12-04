@@ -57,7 +57,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Get glove patterns by a specific maker's ID
     Route::get('/maker/{makerId}', [GloveController::class, 'getPatternsByMakerId']);
-
     // Get history of a specific glove pattern by its ID
     Route::get('/{id}/history', [GloveController::class, 'history']);
 
@@ -140,6 +139,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // Update the brand name of a specific pattern by its ID
         Route::put('/update-brand-name/{id}', [PatternController::class, 'updateBrandName']);
 
+        Route::get('/get/{id}', [PatternController::class, 'getPatternsById']);
+
     });
 
     // Data and Analysis Routes
@@ -166,7 +167,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/get-all-total', [PatternDataController::class, 'getTotalsOfCompanies']);
 
         // Get issue analysis related to patterns
-        Route::get('/get-analysis', [PatternDataController::class, 'getIssueAnalysis']);
+       Route::get('/get-analysis', [PatternDataController::class, 'getIssueAnalysis']);
 
         // Get adjustment accuracy data for patterns
         Route::get('/get-adjustment-accuracy', [PatternDataController::class, 'getAdjustmentAccuracy']);
@@ -200,6 +201,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Measurement History Routes
     Route::get('/get-history', [MeasurementHistoryController::class, 'getHistory']); //
 });
-
+ 
 
 Route::post('/update-date', [PatternDataController::class, 'updateDate']);

@@ -41,7 +41,6 @@ const colors = {
 };
 
 
-
 export default function RainbowChart() {
   const [brand, setBrand] = useState("ALL");
   const [brandList, setBrandList] = useState([]);
@@ -49,7 +48,6 @@ export default function RainbowChart() {
   const [selectedMaterial, setMaterial] = useState("ALL");
   const [materials, setMaterials] = useState([]);
   const [data, setData] = useState([]);
-
   const dataAPI = new DataApi();
 
   useEffect(() => {
@@ -111,6 +109,11 @@ export default function RainbowChart() {
     return tickItem;
   };
 
+  const filteredMaterials = Object.keys(colors).filter(material => {
+    // Check if the material has a value greater than 0 in the data
+    return data.some(record => record[material] > 0);
+  });
+
   return (
     <div className="line-chart-data-box">
       <div className="chart-header line-bar-header">
@@ -119,7 +122,6 @@ export default function RainbowChart() {
           <CustomSelector setValue={setBrand} value={brand} values={["ALL", ...brandList]} />
           <CustomSelector setValue={setMaterial} value={selectedMaterial} values={["ALL", ...materials]} />
           <CustomSelector setValue={setDate} value={date} values={generateYearList()} theme={1} />
-
         </div>
       </div>
 
@@ -137,23 +139,9 @@ export default function RainbowChart() {
               textAnchor="end"
               angle={-45}
               interval={0}
+              label={{ value: 'Brand Name', position: 'bottom', fontSize: 12 }}
             />
-            <YAxis tickFormatter={formatXAxis} tick={{ fontSize: 12 }} />
-            {/* { <Tooltip itemStyle={{ fontSize: "13px" }} contentStyle={{transform:"translate(-300px,-600px)"} }/> */}
-            {/* <Tooltip
-              contentStyle={{
-                backgroundColor: "#2D3748",
-                fontSize: '12px',
-                padding: '5px',
-               transform:"translate(-300px,-600px)",
-                borderRadius: '5px',
-                border: '1px solid #ccc'
-              }}
-              itemStyle={{
-                fontSize: '13px',
-                color: 'white'
-              }}
-            /> */}
+            <YAxis tickFormatter={formatXAxis} tick={{ fontSize: 12 }} label={{ value: 'Popularity', angle: -90, position: 'insideLeft', fontSize: 12 }} />
             {data.length > 0 && data[0] && Object.keys(data[0]).filter(key => key !== "name").map((material, index) => {
               if (selectedMaterial === "ALL") {
                 return (
@@ -166,22 +154,18 @@ export default function RainbowChart() {
               }
               return null;
             })}
-
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-
       <div className='customize-legend mixchart-legend'>
         <div className='legend-title'>Fabric Types</div>
-        {
-          Object.keys(colors).map((key) => (
-            <div className='legend-row' key={key}>
-              <div className='legend-box linechart-legend-box' style={{ backgroundColor: colors[key] }}></div>
-              <span>{key}</span>
-            </div>
-          ))
-        }
+        {filteredMaterials.map((key) => (
+          <div className='legend-row' key={key}>
+            <div className='legend-box linechart-legend-box' style={{ backgroundColor: colors[key] }}></div>
+            <span>{key}</span>
+          </div>
+        ))}
       </div>
 
     </div>

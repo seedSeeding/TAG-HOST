@@ -118,11 +118,25 @@ try {
     $patterns = Pattern::with('gloves','scarves','hats')->where('maker_id',$id)->get();        
     return response()->json($patterns, 200);
 } catch (\Exception $e) {
-    \Log::error('Error fetching glove patterns: ' . $e->getMessage());
     return response()->json(['error' => 'An error occurred while processing your request.'], 500);
 }
 
 }
+/********************************************************************************************************************** */
+public function getPatternsById($id)
+{
+    try {
+        $pattern = Pattern::with(['gloves', 'scarves', 'hats'])->find($id);
+        
+        if (!$pattern) {
+            return response()->json(['error' => 'Pattern not found.'], 404);
+        }
+        return response()->json([$pattern], 200);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'An error occurred while processing your request.'], 500);
+    }
+}
+
 /*************************************************************************************************************************** */
 /**
  * Approve the size of a pattern based on the provided request data.
@@ -195,7 +209,7 @@ public function approvePatternSize(Request $request)
             return response()->json(['error' => 'Size not found in the pattern.'], 404);
         }
     } catch (\Exception $e) {
-        \Log::error('Error approving pattern size: ' . $e->getMessage());
+     
         return response()->json(['error' => 'An error occurred while processing your request.'], 500);
     }
 }
@@ -218,7 +232,7 @@ public function updateBrandName(Request $request, $id)
 
         return response()->json(['message' => 'Brand updated successfully.'], 200);
     } catch (\Exception $e) {
-        \Log::error('Error updating brand name: ' . $e->getMessage());
+       
         return response()->json(['error' => 'An error occurred while processing your request.'], 500);
     }
 }
@@ -313,7 +327,7 @@ public function changeState(Request $request)
             return response()->json(['error' => 'Size not found in the pattern.'], 404);
         }
     } catch (\Exception $e) {
-        \Log::error('Error approving pattern size: ' . $e->getMessage());
+      
         return response()->json(['error' => 'An error occurred while processing your request.'], 500);
     }
 }

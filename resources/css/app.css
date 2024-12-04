@@ -128,6 +128,9 @@
   max-height: 500px;
 
 }
+.notification-row{
+  cursor: pointer;
+}
 .notification-body {
   position: relative;
   overflow: hidden;
@@ -2382,7 +2385,7 @@ section .designer-section {
   border: 2px solid black; 
 }
 .new-notifications.data-notif{
-  right: 50px;
+  right: 100px;
 }
 .new-notifications {
   content: '';
@@ -2615,8 +2618,7 @@ section .designer-section {
   background-color: var(--white-2);
   border-radius: 0px 0px 10px 10px;
   padding: 5px 20px;
-  overflow: hidden ;
-
+  overflow: hidden !important;
 
 }
 
@@ -2704,6 +2706,60 @@ section .designer-section {
 }
 
 /* designer reports styles */
+
+.download-con{
+  margin-left: 20px;
+  position: relative;
+}
+.download-btn{
+
+}
+.download-btn img{
+  width: 30px;
+  object-fit: cover;
+}
+.donwload-controls{
+  position: absolute;
+  width: auto;
+  background-color: #D9D9D9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+  width: 200px;
+  text-align: center;
+  font-weight: 600;
+  border-radius: 10px;
+  right: 0px;
+  padding: 8px;
+
+}
+.donwload-controls div{
+  color: #373839;
+  margin-bottom: 6px;
+}
+.donwload-controls button{
+  background-color: #373839;
+  color: #ECB22E;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 10px 10px;
+  margin-bottom: 5px;
+  width: 100%;
+  border-radius: 10px;
+}
+.donwload-controls button:hover{
+  opacity: 0.9;
+}
+.donwload-controls button img{
+  width: 25px;
+  object-fit: cover;
+
+}
 .download-button {
   padding: 8px 12px;
   margin: 5px;
@@ -2902,7 +2958,14 @@ section .designer-section {
   margin-top: 3px;
 
 }
-
+.analysis-table-con{
+  max-height: 130px ;
+  min-height: 130px ;
+  overflow: hidden ;
+  overflow-y: auto;
+  height: 130px ;
+  scrollbar-width: thin;
+}
 .status-report-row span,
 .analysis-report-row span {
   width: 100%;
@@ -3023,18 +3086,22 @@ span:nth-child(1) span:nth-child(2){
 
 /* table */
 
-.analysis-table {
+#analysis-table {
   margin-top: 3px;
   border-radius: 10px;
   border-collapse: collapse; 
   font-size: .8rem;
   margin-bottom: 20px;
-
+  
 }
+
+
 
 .analysis-table thead tr th {
   text-align: center;
   padding: 5px;
+  position: sticky;
+  top: 0;
 }
 
 .analysis-table thead tr th {
@@ -3421,3 +3488,77 @@ background-color: #D9D9D9;
 }
 
 
+/**** submit all */
+
+
+.submit-all-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+
+.submit-all-modal-box {
+  background-color: #D9D9D9;
+  border-radius: 8px;
+  width: 400px;
+  position: relative;
+  max-width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+
+.modal-content{
+  width: 100%;
+  border-radius: 10px 10px 0px 0px;
+}
+.modal-content p {
+  font-size: 16px;
+  color: white;
+  padding: 10px 25px;
+  font-size: 1.2rem;
+  width: 100%;
+  background-color: #373839;
+  font-weight: 600;
+  border-radius: 10px 10px 0px 0px;
+  margin-bottom: 20px;
+}
+
+
+.modal-actions {
+  display: flex;
+  justify-content:center;
+  gap: 30px;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  
+}
+
+.modal-button {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  flex: 1;
+}
+.modal-button:hover{
+  opacity: .5;
+}
+.modal-button.cancel,.modal-button.confirm {
+  background-color: #FFB100;
+  color: #373839;
+  border: 2px solid #373839;
+  font-weight: 600;
+  font-size: 1.1rem;
+  border-radius: 10px;
+}

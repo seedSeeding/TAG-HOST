@@ -11,7 +11,9 @@ import {
     check_CD,
     check_LW,
     check_HW,
-    inputChangeColor
+    inputChangeColor,
+    generateRandomPN,
+    brands
 } from "../dataTools";
 import HistoryBox from "./HistoryBox";
 import NotifCard from "../Notifications/NotifCard";
@@ -28,7 +30,10 @@ export default function HatsModal(props) {
     const [liningMaterialAdj, setLiningMaterialAdj] = useState(0);
     const [materialAdjustment, setMaterialAdjustment] = useState(0);
 
-    const [patternNumber, setPatternNumber] = useState('');
+    const [isSubmmitAll, setIsSubmitAll] = useState(false);
+    const [openSubmitALlModal, setOpenSubmitAllModal] = useState(false);
+
+    const [patternNumber, setPatternNumber] = useState(generateRandomPN());
     const [name, setName] = useState('');
     const [category, setCategory] = useState('hats');
     const [brand, setBrand] = useState('');
@@ -50,7 +55,12 @@ export default function HatsModal(props) {
 
     const hatApi = new HatAPI();
 
-    const handleSave = (submit) => {
+    const handleSave = (submit,submitAll) => {
+        if (submit && submitAll && isSubmmitAll === false) {
+            setOpenSubmitAllModal(true);
+            return;
+        }
+        setOpenSubmitAllModal(false);
         const validateFields = () => {
             if (!patternNumber) return "Pattern number is required.";
             if (!name) return "Name is required.";
@@ -102,7 +112,7 @@ export default function HatsModal(props) {
 
         const create = async () => {
             try {
-                const response = await hatApi.createHat(pattern, partsToSave, size, submit, image);
+                const response = await hatApi.createHat(pattern, partsToSave, size, submit, image,submitAll);
               
                     setSucess(response);
                     setLoad();
@@ -114,6 +124,7 @@ export default function HatsModal(props) {
         };
 
         create();
+        setIsSubmitAll(false);
     };
 
     const handleSizeChange = (e) => {
@@ -181,12 +192,47 @@ export default function HatsModal(props) {
     //     setBrim((prev) => (check_CD(prev)));
     //     setBill((prev) => (check_LW(prev)));
     // }, [strap, bodyCrown, crown, brim, bill]);
-
+    useEffect(() => {
+        if (isSubmmitAll) {
+            handleSave(true, true);
+        }
+    }, [isSubmmitAll]);
     return (
         <>
             <div className="maker-modal-overlay">
                 {success && (<NotifCard type={"s"} message={success} setMessage={setSucess} />)}
                 {error && (<NotifCard type={"e"} message={error} setMessage={setError} />)}
+                {
+                    openSubmitALlModal && (
+                        <>
+                            <div className="submit-all-modal">
+                                <div className="submit-all-modal-box">
+                                    <div className="modal-content">
+                                        <p>Are you sure you want to submit all size records?</p>
+                                    </div>
+                                    <div className="modal-actions">
+                                        <button
+                                            onClick={() => {
+                                                setIsSubmitAll(false);
+                                                setOpenSubmitAllModal(false);
+                                            }}
+                                            className="modal-button cancel"
+                                        >
+                                            No
+                                        </button>
+                                        <button
+                                            onClick={() => setIsSubmitAll(true)}
+                                            className="modal-button confirm"
+                                        >
+                                            Yes
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </>
+                    )
+                }
                 <div className="maker-create-modal">
                     <div className="modal-pattern-content">
                         <div className="modal-pattern-image" onClick={handleSelectImage} style={{ cursor: 'pointer' }}>
@@ -216,7 +262,11 @@ export default function HatsModal(props) {
                                 <span>Category</span>
                             </div>
                             <div className="modal-control-box">
-                                <input type="text" placeholder="Enter Brand" value={brand} onChange={(e) => setBrand(e.target.value)} />
+                                <select name="" id="" onChange={(e) => setBrand(e.target.value)}>
+                                    {brands.map((value, index) => (
+                                        <option value={value} key={index}>{value}</option>
+                                    ))}
+                                </select>
                                 <span>Brand</span>
                             </div>
                             <div className="modal-control-box">
@@ -264,8 +314,9 @@ export default function HatsModal(props) {
                             </button>
                         </div>
                         <div className="modal-buttons">
-                            <button onClick={() => handleSave(false)}>Save Record</button>
-                            <button onClick={() => handleSave(true)}>Submit Record</button>
+                             <button onClick={() => handleSave(false,false)}>Save Record</button>
+                            <button onClick={() => handleSave(true,false)}>Submit Record</button>
+                            <button onClick={() =>  handleSave(true,true)}>Submit All Size</button>
                             <div>
                                 <select value={size} onChange={handleSizeChange}>
                                     <option value="Small">Small</option>

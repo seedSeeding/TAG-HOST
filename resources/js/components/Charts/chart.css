@@ -197,6 +197,7 @@
   height: 100%;
   max-width: 800px;
   
+  
 }
 
 .linechart {
@@ -204,6 +205,9 @@
 }
 .linechart.line-and-bar{
   padding-right: 15px !important;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
 }
 /* mixcahrt */
 
@@ -277,3 +281,121 @@
   overflow-y: auto;
   scrollbar-width: thin;
 }
+
+.adjusment-legends{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 15px;
+  height: auto;
+  padding-bottom: 50px;
+  margin-left: 10px;
+  position: relative;
+}
+.adjusment-legend-row{
+  border-radius: 20px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-weight: 600;
+  background-color: #373839;
+  min-width: 140px;
+ 
+}
+.adjusment-legend-row .status-legend-row{
+  display: flex;
+  align-items: center;  
+  background-color: white;
+  flex-direction: row;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 80%;
+ 
+}
+.measure-legend-row{
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  background-color: white;
+  width: 100% !important;
+  font-size: 80%;
+  padding-left: 10px;
+  column-gap: 10px;
+  justify-content: left;
+  color: #707275;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 70%;
+}
+.status-legend {
+  border-bottom: 10px solid #373839;
+  
+}
+.measure-legend {
+  border-bottom: 7px solid #373839;
+  border-radius: 20px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-weight: 600;
+  background-color: #373839;
+  min-width: 140px;
+}
+.measure-legend  span{
+  width: 100%;
+  padding: 3px;
+  font-weight: 600;
+  text-align: center;
+  color: #ECB22E;
+
+}
+.elipsis.green{
+  width: 15px;
+  height: 15px;
+  border-radius: 100%;
+  background-color: #B2E87D; 
+}
+.elipsis.red{
+  width: 15px;
+  height: 15px;
+  border-radius: 100%;
+  background-color: #E87D7D; 
+}
+.adjusment-legend-row span{
+  width: 100%;
+  padding: 3px;
+ 
+  text-align: center;
+  color: #ECB22E;
+
+}
+
+.standard-rec{
+  width: 20px;
+  height: 6px;
+}
+.final-rec{
+  width: 20px;
+  height: 3px;
+
+}
+
+.standard-rec.blue { background-color: var(--dark-blue); }
+.standard-rec.yellow { background-color: var(--yellow-orange); }
+.standard-rec.cir { background-color: #2D3748; }
+.standard-rec.dia { background-color: #ECB22E; }
+.standard-rec.hei { background-color: black; }
+
+
+.final-rec.length { background-color: #8FAADC; }
+.final-rec.width { background-color: #B0E0E6; }
+.final-rec.height { background-color: #B0E0E6; }
+.final-rec.diameter { background-color: black; }
+.final-rec.circumference { background-color: #707275; }

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use App\Models\MeasurementHistory;
-
+use App\Http\Controllers\Exception;
 use App\Models\Notification;
 class HatController extends Controller
 {
@@ -90,7 +90,7 @@ class HatController extends Controller
                 ['pattern_id' => $pattern->id, 'size_value' => $sizeValue] 
             );
         } else {
-            throw new Exception('Invalid size provided: ' . $validatedData['size']);
+            // throw new Exception('Invalid size provided: ' . $validatedData['size']);
         }
 
     
@@ -131,7 +131,7 @@ class HatController extends Controller
            
             $validator =  Validator::make($request->all(), [
                 'maker_id' => 'required|exists:users,id',
-                'pattern_number' => 'required|string|unique:patterns,pattern_number',
+                'pattern_number' => 'required|string',
                 'name' => 'required|string',
                 'category' => 'required|string',
                 'brand' => 'required|string',
@@ -178,58 +178,102 @@ class HatController extends Controller
             $imagePath = $request->file('image')->store('images', 'public');
             $validatedData['image'] = $imagePath;
 
-            $pattern = Pattern::create([
-                'maker_id' => $validatedData['maker_id'],
-                'pattern_number' => $validatedData['pattern_number'],
-                'name' => $validatedData['name'],
-                'category' => $validatedData['category'],
-                'brand' => $validatedData['brand'],
-                'outer_material' => $validatedData['outer_material'],
-                'lining_material' => $validatedData['lining_material'],
-                'image' => $validatedData['image'],
-            ]);
+            $pattern = Pattern::where('pattern_number', $validatedData['pattern_number'])->first();
+            if (!$pattern) {
+                $pattern = Pattern::create([
+                    'maker_id' => $validatedData['maker_id'],
+                    'pattern_number' => $validatedData['pattern_number'],
+                    'name' => $validatedData['name'],
+                    'brand' => $validatedData['brand'],
+                    'category' => $validatedData['category'],
+                    'outer_material' => $validatedData['outer_material'],
+                    'lining_material' => $validatedData['lining_material'],
+                    'image' => $validatedData['image'],
+                ]);
+            }
             $sizeID = 1;
            
             foreach ($validatedData['sizes'] as $sizeData) {
-              
-                $size = Size::firstOrCreate(['name' => $sizeData['name']]);
-                $save = ($sizeID === (int) $request->size_to_save);
-                $submitted = ($sizeID === (int) $request->size_to_save) && filter_var($validatedData['submit'], FILTER_VALIDATE_BOOLEAN);
-              
+             
+                $size = Size::updateOrCreate(
+                    ['name' => $sizeData['name']],
+                    ['pattern_id' => $pattern->id] 
+                );
+                $save = ($sizeID === (int) $request->size_to_save) || (5 === (int) $request->size_to_save);
+                $submitted = (($sizeID === (int) $request->size_to_save) && filter_var($validatedData['submit'], FILTER_VALIDATE_BOOLEAN)) || (5 === (int) $request->size_to_save);
+                $hat = Hat::where(['pattern_id' => $pattern->id, 'size_id' => $sizeID])->first();
+                if($hat && $save){
+                    $hat->update([
+                        'pattern_id' => $pattern->id,
+                        'size_id' => $size->id,
+                        'strap' => json_encode($sizeData['measurements']['strap']),
+                        'body_crown' => json_encode($sizeData['measurements']['body_crown']),
+                        'crown' => json_encode($sizeData['measurements']['crown']),
+                        'brim' => json_encode($sizeData['measurements']['brim']),
+                        'bill' => json_encode($sizeData['measurements']['bill']),
+                        'approval_state' => 'pending',
+                        'saved' => $save,
+                        'submitted' => $submitted,
+                        'submit_date' => $submitted ? now() : null,
+                    ]
+                    );
 
-               
-                $hat = Hat::create([
-                    'pattern_id' => $pattern->id,
-                    'size_id' => $size->id,
-                    'strap' => json_encode($sizeData['measurements']['strap']),
-                    'body_crown' => json_encode($sizeData['measurements']['body_crown']),
-                    'crown' => json_encode($sizeData['measurements']['crown']),
-                    'brim' => json_encode($sizeData['measurements']['brim']),
-                    'bill' => json_encode($sizeData['measurements']['bill']),
-                    'approval_state' => 'pending',
-                    'saved' => $save,
-                    'submitted' => $submitted,
-                    'submit_date' => $submitted ? now() : null,
-                ]);
-               if($save){
-                MeasurementHistory::create([
-                    'category' => "hats",
-                    'size_id' => $size->id,
-                    'pattern_id' => $pattern->id,
-                    'data' => json_encode($hat), 
-                    'updated_at' => now(),                    
-                ]);
-               }
-    
-                if($submitted){
-
-                    Notification::create([
-                        'user_id' => $pattern->maker_id,
-                        'message' => "Pattern: {$pattern->pattern_number} has been submitted",
-                        'size' => $hat->size_id === 1 ? 'Small' : ($hat->size_id === 2 ? 'Medium' : ($hat->size_id === 3 ? 'Large' : 'X-Large')),
-                        'is_read' => false,
+                    if($save){
+                        MeasurementHistory::create([
+                            'category' => "hats",
+                            'size_id' => $size->id,
+                            'pattern_id' => $pattern->id,
+                            'data' => json_encode($hat), 
+                            'updated_at' => now(),                    
+                        ]);
+                       }
+            
+                        if($submitted){
+        
+                            Notification::create([
+                                'user_id' => $pattern->maker_id,
+                                'message' => "Pattern: {$pattern->pattern_number} has been submitted",
+                                'size' => $hat->size_id === 1 ? 'Small' : ($hat->size_id === 2 ? 'Medium' : ($hat->size_id === 3 ? 'Large' : 'X-Large')),
+                                'is_read' => false,
+                            ]);
+                        }
+                }else if(!$hat){
+                    $hat = Hat::create([
+                        'pattern_id' => $pattern->id,
+                        'size_id' => $size->id,
+                        'strap' => json_encode($sizeData['measurements']['strap']),
+                        'body_crown' => json_encode($sizeData['measurements']['body_crown']),
+                        'crown' => json_encode($sizeData['measurements']['crown']),
+                        'brim' => json_encode($sizeData['measurements']['brim']),
+                        'bill' => json_encode($sizeData['measurements']['bill']),
+                        'approval_state' => 'pending',
+                        'saved' => $save,
+                        'submitted' => $submitted,
+                        'submit_date' => $submitted ? now() : null,
                     ]);
+
+                    if($save){
+                        MeasurementHistory::create([
+                            'category' => "hats",
+                            'size_id' => $size->id,
+                            'pattern_id' => $pattern->id,
+                            'data' => json_encode($hat), 
+                            'updated_at' => now(),                    
+                        ]);
+                       }
+            
+                        if($submitted){
+        
+                            Notification::create([
+                                'user_id' => $pattern->maker_id,
+                                'message' => "Pattern: {$pattern->pattern_number} has been submitted",
+                                'size' => $hat->size_id === 1 ? 'Small' : ($hat->size_id === 2 ? 'Medium' : ($hat->size_id === 3 ? 'Large' : 'X-Large')),
+                                'is_read' => false,
+                            ]);
+                        }
                 }
+               
+              
                 $sizeID++;
             }
 

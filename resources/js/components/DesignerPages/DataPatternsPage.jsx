@@ -15,6 +15,7 @@ export default function DataPatternPage() {
     const {user} = useStateContext();
     const [selectedData, setSelectedData] = useState([]);
     const [brand, setBrand] = useState("");
+    const [size,setSize] = useState('0');
     const [brandList, setBrandList] = useState([]);
     const [category, setCategory] = useState("gloves");
     const [searchValue, setSearchValue] = useState("");
@@ -98,9 +99,11 @@ export default function DataPatternPage() {
 
             if (!brand) return [];
 
+         
             return selectedDataRecord.filter(record =>
                 record.brand === brand && String(record.pattern_number).includes(String(searchValue))
             );
+          
         };
 
         setSelectedData(filterData());
@@ -156,6 +159,13 @@ export default function DataPatternPage() {
                                         <input type="text" placeholder="Search Pattern" value={searchValue} onChange={(e) => setSearchValue(e.target.value)} />
 
                                     </div>
+                                    <select name="" id="" value={size} onChange={(e) => setSize(e.target.value)} className="selector orange small">
+                                        <option value="0">Size</option>
+                                        <option value="1">Small</option>
+                                        <option value="2">Medium</option>
+                                        <option value="3">Large</option>
+                                        <option value="4">X-Large</option>
+                                    </select>
                                     <select name="" id="" value={brand} onChange={(e) => setBrand(e.target.value)} className="selector orange small">
                                         {
                                             brandList?.map((b) => (
@@ -198,7 +208,7 @@ export default function DataPatternPage() {
                                                 <tbody>
                                                     {selectedData && selectedData.map((record) => (
                                                         record["scarves"]?.map((item) => (
-                                                            item.submitted ? (
+                                                            item.submitted && (size === "0" || item.size_id === Number(size))   ? (
                                                                 <tr key={item.id}>
                                                                     
                                                                     <td>{record.pattern_number}</td>
@@ -271,7 +281,7 @@ export default function DataPatternPage() {
                                                 <tbody>
                                                     {selectedData && selectedData.map((record) => (
                                                         record["gloves"]?.map((item) => (
-                                                            item.submitted ? (
+                                                            item.submitted && (size === "0" || item.size_id === Number(size))  ? (
                                                                 <tr key={item.id}>
                                                                    
                                                                     <td>{record.pattern_number}</td>
@@ -347,7 +357,7 @@ export default function DataPatternPage() {
                                                 <tbody>
                                                     {selectedData && selectedData.map((record) => (
                                                         record["hats"]?.map((item) => (
-                                                            item.submitted ? (
+                                                            item.submitted && (size === "0" || item.size_id === Number(size)) ? (
                                                                 <tr key={item.id}>
                                                                     
                                                                     <td>{record.pattern_number}</td>

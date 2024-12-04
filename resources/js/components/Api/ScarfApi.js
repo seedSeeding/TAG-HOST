@@ -1,3 +1,4 @@
+import { width } from "@fortawesome/free-regular-svg-icons/faAddressBook";
 import { getSizeID } from "../dataTools"; // Importing utility to fetch size ID from size
 import apiService from "../services/apiService"; // Importing the apiService for making API requests
 
@@ -48,19 +49,32 @@ export class ScarfAPI {
     }
 
     // Create a new scarf pattern with provided data
-    async createScarf(pattern, parts, currentSize, submit, image) {
+    async createScarf(pattern, parts, currentSize, submit, image,submitAll) {
         currentSize = currentSize.toLowerCase(); // Ensure the size is in lowercase
         const sizeID = getSizeID(currentSize); // Get the size ID for the given size
         const sizes = ["small", "medium", "large", "x-large"]; // Size options for the scarf
-        const measurementsBySize = sizes.map(size => {
-            // Prepare measurements for each size
-            const data = currentSize === size ? parts : createDefault(); // Use given parts for selected size, default for others
-            return {
-                name: size,
-                measurements: data
-            };
-        });
-
+        let measurementsBySize = null;
+        // alert(submitAll)
+        if(submitAll){
+             measurementsBySize = sizes.map(size => {
+                // Prepare measurements for each size
+                const data = currentSize === size ? parts : getDefaultInitial(parts,sizeID,getSizeID(size)); // Use given parts for selected size, default for others
+                return {
+                    name: size,
+                    measurements: data
+                };
+            });
+        }else{
+             measurementsBySize = sizes.map(size => {
+                // Prepare measurements for each size
+                const data = currentSize === size ? parts : createDefault(); // Use given parts for selected size, default for others
+                return {
+                    name: size,
+                    measurements: data
+                };
+            });
+        }
+       //console.log("MEASUREMENTS ::", measurementsBySize);
         // Prepare form data for the request, including image and measurements for all sizes
         const formData = new FormData();
         formData.append('submit', submit ? 'true' : 'false');
@@ -72,7 +86,13 @@ export class ScarfAPI {
         formData.append('category', pattern.category || "");
         formData.append('outer_material', pattern.outer_material || "");
         formData.append('lining_material', pattern.lining_material || "");
-        formData.append('size_to_save', sizeID);
+        if(submitAll){
+            formData.append('size_to_save', 5);
+           
+        }else{
+            formData.append('size_to_save', sizeID);
+        }
+        
 
         measurementsBySize.forEach((size, index) => {
             formData.append(`sizes[${index}][name]`, size.name); // Append size name
@@ -90,6 +110,7 @@ export class ScarfAPI {
                 },
             });
             if (response.status === 201) {
+                console.log(response.data.message );
                 return response.data.message; // Return success message on successful creation
             }
         } catch (error) {
@@ -107,4 +128,34 @@ function createDefault() {
         edges: { length: '', width: '' }, // Default edges measurements
     };
     return measurementKeys; // Return the default measurements
+}
+
+// function calculateMeasures(initialM,lastS,prevS){
+//     const difference = 0.25;
+//     const bodyDifference = 15.25;
+//     lastS = lastS === "Small" ? 1 : lastS === "Medium" ? 2 : lastS === "Large" ? 3 : 4;
+//     prevS = prevS === "Small" ? 1 : prevS === "Medium" ? 2 : prevS === "Large" ? 3 : 4;
+//     const compute = prevS - lastS;
+// }
+
+function getMeasure(part, com) {
+    return {
+        length: (parseFloat(part.length) + com).toFixed(2),
+        width: (parseFloat(part.width) + com).toFixed(2),
+    };
+}
+
+function getDefaultInitial(parts, currentSizeID, sizeID) {
+    const difference = 0.25;
+    const bodyDifference = 15.25;
+    const compute = sizeID - currentSizeID;
+    console.log(sizeID + " - " + currentSizeID + " = " + compute);
+    
+    const measurementKeys = {
+        body: getMeasure(parts.body, bodyDifference * compute),
+        fringers: getMeasure(parts.fringers, difference * compute),
+        edges: getMeasure(parts.edges, difference * compute),
+    };
+
+    return measurementKeys;
 }
