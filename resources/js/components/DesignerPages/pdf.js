@@ -167,7 +167,7 @@ async function generateReport() {
     // Create a download link
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'Pattern_Development_Report.pdf'; // Set the filename for download
+    link.download = `{Pattern_Development_Report}.pdf`; // Set the filename for download
     document.body.appendChild(link);
     link.click(); // Programmatically click the link to trigger download
     document.body.removeChild(link); // Clean up

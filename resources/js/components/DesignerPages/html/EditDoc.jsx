@@ -160,7 +160,7 @@ export default function EditDoc(props) {
         const modifiedDocx = docx.getZip().generate({ type: 'blob' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(modifiedDocx);
-        link.download = 'TAGGLOBAL_REPORT.docx';
+        link.download = `TAG ${category} Report ${number}.docx`;
         link.click();
         setDownload({});
     };
