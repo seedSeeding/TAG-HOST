@@ -54,7 +54,9 @@ export default function HatsModal(props) {
     const [bill, setBill] = useState(getStandardMeasurements_LW(size,"Bill"));
 
     const hatApi = new HatAPI();
-
+    useEffect(() => {
+        setBrand(brands[0]);
+    }, []);
     const handleSave = (submit,submitAll) => {
         if (submit && submitAll && isSubmmitAll === false) {
             setOpenSubmitAllModal(true);
@@ -262,7 +264,7 @@ export default function HatsModal(props) {
                                 <span>Category</span>
                             </div>
                             <div className="modal-control-box">
-                                <select name="" id="" onChange={(e) => setBrand(e.target.value)}>
+                            <select name="" id="" value={brand} onChange={(e) => setBrand(e.target.value)}>
                                     {brands.map((value, index) => (
                                         <option value={value} key={index}>{value}</option>
                                     ))}

@@ -14,7 +14,7 @@ export default function GlovesModal(props) {
     const [outerMaterialAdj, setOuterMaterialAdj] = useState(0);
     const [liningMaterialAdj, setLiningMaterialAdj] = useState(0);
     const [materialAdjusment, setMaterialAdjusment] = useState(0);
-    
+
     const [isSubmmitAll, setIsSubmitAll] = useState(false);
     const [openSubmitALlModal, setOpenSubmitAllModal] = useState(false);
 
@@ -38,7 +38,9 @@ export default function GlovesModal(props) {
     const [ringFinger, setRingFinger] = useState(getStandardMeasurements_LW(size, "Ring Finger"));
     const [littleFinger, setLittleFinger] = useState(getStandardMeasurements_LW(size, "Little Finger"));
     const [wrist, setWrist] = useState(getStandardMeasurements_LW(size, "Wrist"));
-
+    useEffect(() => {
+        setBrand(brands[0]);
+    }, []);
 
     const gloveApi = new GloveAPI();
 
@@ -269,7 +271,7 @@ export default function GlovesModal(props) {
                                 <span>Category</span>
                             </div>
                             <div className="modal-control-box">
-                                <select name="" id="" onChange={(e) => setBrand(e.target.value)}>
+                                <select name="" id="" value={brand} onChange={(e) => setBrand(e.target.value)}>
                                     {brands.map((value, index) => (
                                         <option value={value} key={index}>{value}</option>
                                     ))}

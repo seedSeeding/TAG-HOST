@@ -28,7 +28,7 @@ export default function ScarvesModal(props) {
     const [error, setError] = useState('');
     const [success, setSucess] = useState('');
 
-       
+
     const [isSubmmitAll, setIsSubmitAll] = useState(false);
     const [openSubmitALlModal, setOpenSubmitAllModal] = useState(false);
 
@@ -48,8 +48,11 @@ export default function ScarvesModal(props) {
     const [edges, setEdges] = useState(getStandardMeasurements_LW(size, "Edges"));
 
     const scarfApi = new ScarfAPI();
+    useEffect(() => {
+        setBrand(brands[0]);
+    }, []);
 
-    const handleSave = (submit,submitAll) => {
+    const handleSave = (submit, submitAll) => {
         if (submit && submitAll && isSubmmitAll === false) {
             setOpenSubmitAllModal(true);
             return;
@@ -73,7 +76,7 @@ export default function ScarvesModal(props) {
 
             for (const [partName, measurement] of Object.entries(parts)) {
                 if (!measurement || measurement.length === 0) {
-                   // alert(partName);
+                    // alert(partName);
                     return `Measurements for ${partName} must be provided.`;
                 }
             }
@@ -108,12 +111,12 @@ export default function ScarvesModal(props) {
         const create = async () => {
             try {
                 const response = await scarfApi.createScarf(
-                    pattern, partsToSave, size, submit, image,submitAll
+                    pattern, partsToSave, size, submit, image, submitAll
                 );
-                
-                    setSucess(response);
-                    setLoad();
-               
+
+                setSucess(response);
+                setLoad();
+
             } catch (error) {
                 console.log("Error:", error.message);
                 setError(error.message);
@@ -250,7 +253,7 @@ export default function ScarvesModal(props) {
                                 <span>Category</span>
                             </div>
                             <div className="modal-control-box">
-                                <select name="" id="" onChange={(e) => setBrand(e.target.value)}>
+                                <select name="" id="" value={brand} onChange={(e) => setBrand(e.target.value)}>
                                     {brands.map((value, index) => (
                                         <option value={value} key={index}>{value}</option>
                                     ))}
@@ -302,9 +305,9 @@ export default function ScarvesModal(props) {
                             </button>
                         </div>
                         <div className="modal-buttons">
-                            <button onClick={() => handleSave(false,false)}>Save Record</button>
-                            <button onClick={() => handleSave(true,false)}>Submit Record</button>
-                            <button onClick={() =>  handleSave(true,true)}>Submit All Size</button>
+                            <button onClick={() => handleSave(false, false)}>Save Record</button>
+                            <button onClick={() => handleSave(true, false)}>Submit Record</button>
+                            <button onClick={() => handleSave(true, true)}>Submit All Size</button>
                             <div>
                                 <select value={size} onChange={handleSizeChange}>
                                     <option value="Small">Small</option>
