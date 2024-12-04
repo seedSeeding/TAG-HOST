@@ -140,6 +140,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/update-brand-name/{id}', [PatternController::class, 'updateBrandName']);
 
         Route::get('/get/{id}', [PatternController::class, 'getPatternsById']);
+        Route::get('/get-by-number/{pNumber}', [PatternController::class, 'getPatternByNumber']);
 
     });
 

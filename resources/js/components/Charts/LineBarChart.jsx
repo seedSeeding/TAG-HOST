@@ -231,7 +231,36 @@ export default function LineBarChart() {
         const deviation = Math.abs(standard - adjusted) / standard;
         return deviation <= 0.05 ? '#B2E87D' : '#E87D7D';
     };
+    const getStatusLabel = (standard, adjusted) => {
+        if (!standard || !adjusted) return "Data missing";
+        const deviation = Math.abs(standard - adjusted) / standard;
+        return deviation <= 0.05 ? "On Target" : "Off Target";
+    };
+    const renderTooltip = (props) => {
+        const { payload } = props;
 
+        if (payload && payload.length > 0) {
+            const { name, standardLength, adjustedLength, standardWidth, adjustedWidth } = payload[0].payload;
+
+            // Get the status based on standard and adjusted values
+            const lengthStatus = getStatusLabel(standardLength, adjustedLength);
+            const widthStatus = getStatusLabel(standardWidth, adjustedWidth);
+
+            return (
+                <div className="custom-tooltip">
+                    <p className='part'>{name}</p>
+                    <p>Standard Length: {standardLength} mm</p>
+                    <p>Adjusted Length: {adjustedLength} mm</p>
+                    <p  >Status: <span style={{ color:lengthStatus === "On Target" ? "#B2E87D" : "#E87D7D"}}> {lengthStatus}</span></p>
+                    <p>Standard Width: {standardWidth} mm</p>
+                    <p>Adjusted Width: {adjustedWidth} mm</p>
+                    <p >Status: <span style={{ color:widthStatus === "On Target" ? "#B2E87D" : "#E87D7D"}}>{widthStatus}</span></p>
+                </div>
+            );
+        }
+
+        return null;
+    };
     return (
         <div className='line-chart-data-box'>
             <div className='chart-header line-bar-header'>
@@ -278,9 +307,9 @@ export default function LineBarChart() {
                         />
 
                         <YAxis fontSize={9} textAnchor="middle" label={{ value: 'Measurements(inches)', angle: -90, fontSize: 14, color: "#ECB22E" }} />
+                        <Tooltip content={renderTooltip} />
 
-
-                        <Tooltip
+                        {/* <Tooltip
                             contentStyle={{
                                 backgroundColor: "#2D3748",
                                 fontSize: '12px',
@@ -298,7 +327,7 @@ export default function LineBarChart() {
                                 fontSize: '15px',
                                 color: 'white'
                             }}
-                        />
+                        /> */}
                         {
                             (activeCategory === "gloves" || activeCategory === "scarves") && (
                                 <>
@@ -413,7 +442,7 @@ export default function LineBarChart() {
                     <div className='status-legend adjusment-legend-row'>
                         <span>Status</span>
                         <div className='status-legend-row'><div className='elipsis green'></div>On Target</div>
-                        <div className='status-legend-row'><div className='elipsis red'></div>On Target</div>
+                        <div className='status-legend-row'><div className='elipsis red'></div>Off Target</div>
                     </div>
 
                     <div className='measure-legend adjustment-legend-row'>
@@ -421,7 +450,30 @@ export default function LineBarChart() {
 
 
                         {
-                            activeCategory === "scarves" ||   activeCategory === "gloves" && (
+                            activeCategory === "scarves" && (
+                                <>
+                                    <div className='measure-legend-row'>
+                                        <div className='standard-rec blue'></div>
+                                        Standard Length
+                                    </div>
+                                    <div className='measure-legend-row'>
+                                        <div className='standard-rec yellow'></div>
+                                        Standard Width
+                                    </div>
+
+                                    <div className='measure-legend-row'>
+                                        <div className='final-rec length'></div>
+                                        Final Length
+                                    </div>
+                                    <div className='measure-legend-row'>
+                                        <div className='final-rec width'></div>
+                                        Final Width
+                                    </div>
+                                </>
+                            )
+                        }
+                         {
+                            activeCategory === "gloves" && (
                                 <>
                                     <div className='measure-legend-row'>
                                         <div className='standard-rec blue'></div>

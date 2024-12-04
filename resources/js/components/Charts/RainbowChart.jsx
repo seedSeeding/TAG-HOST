@@ -1,4 +1,4 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import React, { useEffect, useState } from 'react';
 import CustomSelector from '../Tools/CustomeSelector';
 import { DataApi } from '../Api/dataService';
@@ -6,7 +6,7 @@ import { generateYearList, materialList } from '../dataTools';
 
 const colors = {
   Cashmere: "#FF7F32",
-  Chiffon: "#FFB733",
+  Chiffon: "#b68d40",
   Cordura: "#1E4D92",
   Cotton: "#2A7DBE",
   Denim: "#0C5D98",
@@ -22,8 +22,8 @@ const colors = {
   Nitrile: "#1A3F72",
   Nylon: "#9B5A2C",
   Polyester: "#FFB549",
-  Polyurethane: "#FFB300",
-  Rayon: "#FFDD33",
+  Polyurethane: "#8cb44c",
+  Rayon: "#122620",
   Rubber: "#B56D3B",
   Silicone: "#1B3F5C",
   Silk: "#2B4D77",
@@ -49,7 +49,7 @@ export default function RainbowChart() {
   const [materials, setMaterials] = useState([]);
   const [data, setData] = useState([]);
   const dataAPI = new DataApi();
-
+  const [filteredMaterials,setFilteredMaterials] = useState([]);
   useEffect(() => {
     const getBrandList = async () => {
       try {
@@ -101,19 +101,27 @@ export default function RainbowChart() {
   }, [brandList, date, brand]);
 
   const formatXAxis = (tickItem) => {
-    if (tickItem >= 1000) {
-      return `${(tickItem / 100)}k`;
-    } else if (tickItem > 100) {
-      return `${(tickItem / 100).toFixed((String(tickItem).length) - 1)}`;
-    }
-    return tickItem;
+    // Round to the nearest integer and format the tick
+    return Math.floor(tickItem);
   };
-
-  const filteredMaterials = Object.keys(colors).filter(material => {
-    // Check if the material has a value greater than 0 in the data
-    return data.some(record => record[material] > 0);
-  });
-
+  
+  useEffect(() => {
+    if (data.length > 0) {
+      const filtered = Object.keys(data[0])
+        .filter((key) => {
+          if( key !== "name" && (selectedMaterial === "ALL" || selectedMaterial === key)){
+            if(data[0][key] > 0){
+              return true;
+            }
+          }
+        });
+      
+      setFilteredMaterials(filtered);
+    } else {
+      setFilteredMaterials([]);
+    }
+  }, [data, selectedMaterial,brand]);
+  
   return (
     <div className="line-chart-data-box">
       <div className="chart-header line-bar-header">
@@ -140,7 +148,9 @@ export default function RainbowChart() {
               angle={-45}
               interval={0}
               label={{ value: 'Brand Name', position: 'bottom', fontSize: 12 }}
+             
             />
+          {/* <Tooltip/> */}
             <YAxis tickFormatter={formatXAxis} tick={{ fontSize: 12 }} label={{ value: 'Popularity', angle: -90, position: 'insideLeft', fontSize: 12 }} />
             {data.length > 0 && data[0] && Object.keys(data[0]).filter(key => key !== "name").map((material, index) => {
               if (selectedMaterial === "ALL") {

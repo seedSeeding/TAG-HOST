@@ -35,11 +35,11 @@ export default function MixBar() {
     "Asymmetrical Fit": "#D97706",
     "Too Large": "#F59E0B",
     "Too Loose": "#FBBF24",
-    "Too Short": "#FCD34D",
-    "Too Tight": "#FEF3C7",
+    "Too Short": "#8cb44c",
+    "Too Tight": "#b68d40",
     "Too Wide": "#B45309",
     "Too Narrow": "#92400E",
-    "Uneven Sizing": "yellow",
+    "Uneven Sizing": "#122620",
     "Width Mismatch": "#4B5563",
   };
 
@@ -63,6 +63,7 @@ export default function MixBar() {
             margin={{ top: 10, right: 30, left: 0, bottom: 30 }}
             style={{ borderRadius: 10, width: "auto" }}
           >
+            <Tooltip/>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" fontSize={9} textAnchor="end" angle={-45} interval={0} label={{ value: "Brands", position: "bottom", offset: 10, fontSize: 12 }} />
             <YAxis tick={{ fontSize: 12 }} allowDecimals={false} label={{ value: "Number of Issues", angle: -90, position: 'insideLeft', fontSize: 12 }} />

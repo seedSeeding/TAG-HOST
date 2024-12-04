@@ -136,6 +136,19 @@ public function getPatternsById($id)
         return response()->json(['error' => 'An error occurred while processing your request.'], 500);
     }
 }
+public function getPatternByNumber($pNumber)
+{
+    try {
+        $pattern = Pattern::with(['gloves', 'scarves', 'hats'])->where('pattern_number',$pNumber)->first();
+        
+        if (!$pattern) {
+            return response()->json(['error' => 'Pattern not found.'], 404);
+        }
+        return response()->json([$pattern], 200);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'An error occurred while processing your request.'], 500);
+    }
+}
 
 /*************************************************************************************************************************** */
 /**

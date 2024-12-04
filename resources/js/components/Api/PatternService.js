@@ -98,6 +98,19 @@ export class PatternApi {
       throw error.error; // Handle errors by throwing the error object
     }
   }
+
+  async getPatternByPN(pattern_number){
+    try {
+      const res = await this.api.get(`patterns/get-by-number/${pattern_number}`);
+     // console.log("data::", res.data); // Log the fetched data (for debugging)
+      if (res.status === 200) {
+     //   console.log(res)
+        return res.data; // Return the data if the request was successful
+      }
+    } catch (error) {
+      throw error.error; // Handle errors by throwing the error object
+    }
+  }
   // Get the approval status for different sizes (small, medium, large, xLarge)
   getSizesStatus(pattern) {
     const data = pattern.gloves || pattern.scarves || pattern.hats || []; // Get the appropriate category data

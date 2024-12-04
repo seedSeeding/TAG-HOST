@@ -80,9 +80,9 @@ export default function LineChartData() {
                 color: 'white'
               }}
             />
-            <Line type="linear" dataKey="hats" stroke="#ECB22E" strokeWidth={2} />
-            <Line type="linear" dataKey="gloves" stroke="#2D3748" strokeWidth={2} />
-            <Line type="linear" dataKey="scarves" stroke="#707275" strokeWidth={2} />
+            <Line type="linear" dataKey="hats" stroke="#ECB22E" strokeWidth={2} dot={{fill:"#ECB22E"}}/>
+            <Line type="linear" dataKey="gloves" stroke="#2D3748" strokeWidth={2} dot={{fill:"#2D3748"}}/>
+            <Line type="linear" dataKey="scarves" stroke="#707275" strokeWidth={2} dot={{fill:"#707275"}}/>
           </LineChart>
         </ResponsiveContainer>
         <div className='customize-legend'>

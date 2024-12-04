@@ -395,7 +395,19 @@
 
 
 .final-rec.length { background-color: #8FAADC; }
-.final-rec.width { background-color: #B0E0E6; }
+.final-rec.width { background-color: #707275; }
 .final-rec.height { background-color: #B0E0E6; }
 .final-rec.diameter { background-color: black; }
 .final-rec.circumference { background-color: #707275; }
+
+
+.custom-tooltip{
+  background-color: var(--dark-blue);
+  color: white;
+  padding: 5px;
+  font-size: .9rem;
+  border-radius: 10px;
+}
+.custom-tooltip .part{
+  color: var(--yellow-orange);
+}
